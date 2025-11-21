@@ -1,0 +1,17 @@
+<?php
+namespace App\Controllers;
+
+class HomeController
+{
+    
+    public function __construct()
+    {
+        
+
+    }
+
+    public function index()
+    {
+        include __DIR__ . "/../../resources/views/HomePage.php";
+    }
+}
