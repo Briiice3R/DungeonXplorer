@@ -20,5 +20,8 @@ $router->get('/', "HomeController@index");
 
 
 $router->get('/chapter/{id}', "ChapterController@show");
+
+$router->get('/signup', "SignUpController@index");
+$router->post('/signup', "SignUpController@index");
 // Run it!
 $router->run();
