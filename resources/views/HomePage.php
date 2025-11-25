@@ -13,8 +13,8 @@
         <h1 class="logo">DUNGEONXPLORER</h1>
         <div class="nav-container">
             <nav id="nav1">
-                <a href="#">Accueil</a>
-                <a href="#">Aventure</a>
+                <a href="/">Accueil</a>
+                <a href="/aventure">Aventure</a>
             </nav>
             <nav id="nav2">
                 <a href="#">Créer un compte</a>
@@ -37,9 +37,7 @@
     </section>
     <footer>
         <p>&copy; 2025 DungeonXplorer. Tous droits réservés.</p>
-        <a href="#"><i class="fab fa-facebook"></i></a>
-        <a href="#"><i class="fab fa-twitter"></i></a>
-        <a href="#"><i class="fab fa-instagram"></i></a>
+        <a href="https://github.com/Briiice3R/DungeonXplorer"><i class="fa-brands fa-github"></i></a>
     </footer>
 </body>
 </html>

@@ -22,7 +22,6 @@ header {
     align-items: center;
     background-color: var(--bg-secondary);
     padding: 0.5rem;
-    width: 100%;
 }
 
 .logo {
@@ -40,6 +39,7 @@ header {
     align-items: center;
     flex: 1;
     position: relative;
+    padding-right: 1rem;
 }
 
 #nav1 {
@@ -115,11 +115,52 @@ header {
     padding-bottom: 0.5rem;
 }
 
+.main-container {
+    flex: 1;
+    padding: 2rem;
+    display: flex;
+    gap: 2rem;
+}
+
+.game-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 20%;
+    padding: 1rem;
+    background-color: var(--bg-secondary);
+    border-radius: 5px;
+}
+
+.game-nav button {
+    background-color: var(--accent-gold);
+    color: var(--bg-primary);
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 2rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: 90%;
+}
+
+.game-nav button:hover {
+    background-color: var(--accent-red);
+    transform: scale(1.05);
+}
+
+.game-nav i {
+    font-size: 2rem;
+}
+
 footer {
     background-color: var(--bg-secondary);
     text-align: center;
     padding: 1rem;
-    margin-top: 2rem;
+    margin: auto;
 }
 
 footer a {
