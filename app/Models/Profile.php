@@ -1,4 +1,7 @@
 <?php
+    namespace App\Models;
+    use App\Core\Database;
+
 
     class Profile{
         protected $name;
@@ -13,33 +16,40 @@
             $this->id = $id;
         }
 
-        public function getName(){
+        public function get_Name(){
             return $this->name;
         }
 
-        public function setName($name){
+        public function set_Name($name){
             $this-> name = $name;
         }
 
-        public function getPhoto(){
+        public function get_Photo(){
             return $this->photo;
         }
 
-        public function setPhoto($photo){
+        public function set_Photo($photo){
             $this->photo = $photo;
         }
 
-        public function getMail(){
+        public function get_Mail(){
             return $this->mail;
         }
 
-        public function setMail($mail){
+        public function set_Mail($mail){
             $this->mail = $mail;
         }
 
-        public function getId(){
+        public function get_Id(){
             return $this->id;
         }
+        public function recupere_Donnee(){
+            $data = new Database();
+           $query = $data->db->prepare("SELECT * FROM PROFILE  WHERE id = :1");
+        $query->bindParam(':id', $taskId);
+        $query->execute();
+       
+    }
 
     }
 
