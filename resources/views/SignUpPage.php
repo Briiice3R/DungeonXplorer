@@ -7,11 +7,11 @@
 </head>
 <body>
     <h1>SignUp</h1>
-    <form action="" method="post">
-        <label>Username : </label><input id="username" type="text">
-        <label>Email address : </label><input id="email" type="text">
-        <label>Password : </label><input id="password_1" type="password">
-        <label>Confirm Password : </label><input id="password_2" type="password">
+    <form action="/signup" method="POST">
+        <label>Username : </label><input id="username" name="username" type="text">
+        <label>Email address : </label><input id="email" name="email" type="text">
+        <label>Password : </label><input id="password_1" name="password_1" type="password">
+        <label>Confirm Password : </label><input id="password_2" name="password_2" type="password">
         
         <input type="submit" value="Send">
     </form>

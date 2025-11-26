@@ -1,6 +1,6 @@
 <?php
 namespace App\Controllers;
-use Src\Core\DatabaseController;
+use App\Core\Database;
 use Throwable;
 
 class SignUpController{
@@ -18,11 +18,11 @@ class SignUpController{
         $password = $_POST["password_1"];
         $email = $_POST["email"];
     
-        $req_verif_1 = DatabaseController::getInstance()->prepare("SELECT count(*) FROM DUNGEON_USER WHERE email='$email'");
+        $req_verif_1 = Database::getInstance()->prepare("SELECT count(*) FROM user_dungeon WHERE email='$email'");
         $req_verif_1->execute();
-        if($req_verif_1>0){
+        if($req_verif_1->fetchColumn()<1){
             if($_POST["password_1"]==$_POST["password_2"]){
-                $req = DatabaseController::getInstance()->prepare("INSERT INTO (username, password, email) VALUES (:username, :password, :email)");
+                $req = Database::getInstance()->prepare("INSERT INTO user_dungeon (username, password, email, admin) VALUES (:username, :password, :email, 0)");
                 $req->bindParam(':username',$username);
                 $req->bindParam(':password',$password);
                 $req->bindParam(':email',$email);

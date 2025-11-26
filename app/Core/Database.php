@@ -1,16 +1,16 @@
 <?php
 
-namespace Src\Core;
+namespace App\Core;
 use \PDO;
 use \PDOException;
 
 
 
-class DatabaseController{
+class Database{
     private static $instance = null;
     private $db;
 
-    public function __construct()
+    private function __construct()
     {
         $envFile = __DIR__ . '/../../.env';
         if (!file_exists($envFile)) {
