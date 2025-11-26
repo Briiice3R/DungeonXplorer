@@ -22,7 +22,7 @@
         <div class="flex items-center flex-1 relative pr-4">
             <nav class="flex absolute left-1/2 transform -translate-x-1/2">
                 <a href="/" class="text-[#C4975E] mx-4 font-['Pirata_One'] text-3xl no-underline hover:text-[#8B1E1E]">Accueil</a>
-                <a href="/aventure" class="text-[#C4975E] mx-4 font-['Pirata_One'] text-3xl no-underline hover:text-[#8B1E1E]">Aventure</a>
+                <a href="/aventureaccueil" class="text-[#C4975E] mx-4 font-['Pirata_One'] text-3xl no-underline hover:text-[#8B1E1E]">Aventure</a>
             </nav>
             <nav class="flex ml-auto">
                 <a href="#" class="text-[#C4975E] mx-4 font-['Pirata_One'] text-3xl no-underline hover:text-[#8B1E1E]">Créer un compte</a>

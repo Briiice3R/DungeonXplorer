@@ -43,6 +43,17 @@
         </div>
     </div>
 
+    <!-- Contenu Principale droite -->
+    <section>
+        <h1><?php echo $herotype->getName()(); ?></h1>
+        <img src="<?php echo $herotype->getImage(); ?>" alt="Image du hero" style="max-width: 100%; height: auto;">
+        <p><?php echo $herotype->getMax_pv(); ?></p>
+        <p><?php echo $herotype->getMax_mana(); ?></p>
+        <p><?php echo $herotype->getMax_strength(); ?></p>
+        <p><?php echo $herotype->getMax_initiative(); ?></p>
+        <p><?php echo $herotype->getMax_items(); ?></p>
+    </section>
+
     <!-- Footer -->
     <footer class="bg-[#2E2E2E] text-center p-4 mt-auto">
         <p class="mb-2">&copy; 2025 DungeonXplorer. Tous droits réservés.</p>
