@@ -17,7 +17,8 @@ $router->set404(function(){
 
 // Routes
 $router->get('/', "HomeController@index");
-$router->get('/aventure', "AventureAccueilController@index");
+$router->get('/aventure', "AventureController@index");
+$router->get('/aventurecreate', "AventureController@create");
 
 $router->get('/chapter/{id}', "ChapterController@show");
 // Run it!

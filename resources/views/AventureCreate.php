@@ -35,9 +35,6 @@
         <!-- Boutons de navigation -->
         <div class="flex flex-col gap-4 w-fit p-4 bg-[#2E2E2E] rounded-lg shadow-lg">
             <a href="/" class="flex items-center gap-2 bg-[#C4975E] text-[#1A1A1A] px-4 py-2 rounded-md font-['Roboto'] text-base hover:bg-[#8B1E1E] transition-colors">
-                <i class="fas fa-play"></i> Reprendre
-            </a>
-            <a href="/" class="flex items-center gap-2 bg-[#C4975E] text-[#1A1A1A] px-4 py-2 rounded-md font-['Roboto'] text-base hover:bg-[#8B1E1E] transition-colors">
                 <i class="fas fa-book"></i> Nouvelle Aventure
             </a>
             <a href="/" class="flex items-center gap-2 bg-[#C4975E] text-[#1A1A1A] px-4 py-2 rounded-md font-['Roboto'] text-base hover:bg-[#8B1E1E] transition-colors">
