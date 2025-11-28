@@ -29,25 +29,24 @@
             <div class="font-['Roboto'] text-3xl text-[#E5E5E5] mt-8">
                 <h2 class="font-['Pirata_one'] text-5xl text-center text-[#C4975E] mb-6">Votre profil </h2>
                 <hr class="border-[#C4975E] mb-6">
-                <form action="" method="post">
-                <label for="full_name">Votre nom : </label>
-                <input class="mb-5 bg-[#2E2E2E] rounded-md p-1" type="text" placeholder=" <?php echo $updateProfileController->get_Name() ?>">
-                </br>
-                <label for="gender">Votre genre : </label>
-                <input class="mb-5 bg-[#2E2E2E] rounded-md p-1" type="text" placeholder=" <?php echo $updateProfileController->get_Gender(); ?>">
-                </br>
-                <label for="email">Votre adresse mail : </label>
-                <input class="mb-5 bg-[#2E2E2E] rounded-md p-1" type="text" placeholder=" <?php echo $updateProfileController->get_Email()?>">
-                </br>
-                <label for="date_of_birth">Votre date de naissance : </label>
-                <input class="mb-5 bg-[#2E2E2E] rounded-md p-1" type="text" placeholder=" <?php echo $updateProfileController->get_Date_of_Birth()?>">
-                </br>
-                
-                <div class="flex justify-center ">
+                <form action="/update" method="POST">
+                    <label for="full_name">Votre nom : </label>
+                    <input name="full_name" class="mb-5 bg-[#2E2E2E] rounded-md p-1" type="text" placeholder='<?php echo $updateProfileController->get_Name()?>'>
+                    </br>
+                    <label for="gender">Votre genre : </label>
+                    <input name="gender" class="mb-5 bg-[#2E2E2E] rounded-md p-1" type="text" placeholder='<?php echo $updateProfileController->get_Gender()?>'>
+                    </br>
+                    <label for="email">Votre adresse mail : </label>
+                    <input name="email" class="mb-5 bg-[#2E2E2E] rounded-md p-1" type="text" placeholder='<?php echo $updateProfileController->get_Email()?>'>
+                    </br>
+                    <label for="date_of_birth">Votre date de naissance : </label>
+                    <input name="date_of_birth" class="mb-5 bg-[#2E2E2E] rounded-md p-1" type="text" placeholder='<?php echo $updateProfileController->get_Date_of_Birth()?>'>
+                    </br>
+                    <div class="flex justify-center ">
                         <a href="/profile" class=" bg-[#C4975E] m-1 hover:bg-[#8B1E1E] rounded-md p-2">Annuler</a>
-                        <a class=" bg-[#C4975E] m-1 hover:bg-[#8B1E1E] rounded-md p-2">Valider</a>
-                </div>
-            </form>
+                        <input type="submit" value="Valider" class=" bg-[#C4975E] m-1 hover:bg-[#8B1E1E] rounded-md p-2">
+                    </div>
+                </form>
             </div>
         </main>
         <footer class="bg-[#2E2E2E] text-center p-4 mt-auto">
