@@ -74,6 +74,20 @@
        
     }
 
+    public function maj_Profil($id, $full_name, $date_of_birth, $email, $gender){
+        $data = Database::getInstance();
+        $query = $data->prepare(" UPDATE TABLE USERS SET FULL_NAME= :full_name, DATE_OF_BIRTH = :date_of_birth, EMAIL = :email, GENDER= :gender WHERE ID= :id");
+        $query->bindParam(':id ', $id);
+        $query->bindParam(':full_name ', $full_name);
+        $query->bindParam(':date_of_birth', $date_of_birth);
+        $query->bindParam(':email', $email);
+        $query->bindParam(':gender', $gender);
+        query->execute();
+        header('location: /profile');
+    }
+    
+
+
 }
 
 

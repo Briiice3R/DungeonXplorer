@@ -29,15 +29,17 @@
             <div class="font-['Roboto'] text-3xl text-[#E5E5E5] mt-8">
                 <h2 class="font-['Pirata_one'] text-5xl text-center text-[#C4975E] mb-6">Votre profil </h2>
                 <hr class="border-[#C4975E] mb-6">
+                <form action="" method="post">
                 <p class="mb-3">Votre nom : <?php echo $profilecontroller->get_Name() ?> </p>
                 <p class="mb-3">Votre genre : <?php echo $profilecontroller->get_Gender()?> </p>
                 <p class="mb-3">Votre adresse mail : <?php echo $profilecontroller->get_Email()?> </p>
                 <p class="mb-3">Votre date de naissance : <?php echo $profilecontroller->get_Date_of_Birth()?></p>
                 <p class="mb-8">Date de création du compte : <?php echo $profilecontroller->get_Create_at()?></p>
-                <div class="flex justify-center">
-                        <a href="/updateprofile" class=" bg-[#C4975E] m-1 hover:bg-[#8B1E1E] rounded-md p-2">Modifier</a>
-                        <a class=" bg-[#C4975E] m-1 hover:bg-[#8B1E1E] rounded-md p-2">Supprimer</a>
+                <div class="flex justify-center ">
+                        <a href="/profile" class=" bg-[#C4975E] m-1 hover:bg-[#8B1E1E] rounded-md p-2">Annuler</a>
+                        <a class=" bg-[#C4975E] m-1 hover:bg-[#8B1E1E] rounded-md p-2">Valider</a>
                 </div>
+            </form>
             </div>
         </main>
         <footer class="bg-[#2E2E2E] text-center p-4 mt-auto">
