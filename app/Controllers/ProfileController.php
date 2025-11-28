@@ -1,30 +1,25 @@
 <?php
     namespace App\Controllers;
     use App\Models\Profile;
-    
+
     class ProfileController{
 
-        protected $profile;
+        protected Profile $profilecontroller;
 
         public function __construct(){
-            $this->profile = new Profile(1, "nom", "photo", "mail");
+          
+             $this->profilecontroller = new Profile(1); 
+            
         }
 
              public function index()
             {
-               $profile = $this->getProfile();
-                include __DIR__ . "/../../resources/views/ProfilePage.php";
+               $profilecontroller = $this->profilecontroller;
+               include __DIR__ . "/../../resources/views/ProfilePage.php";
                 
             }
 
-            public function getProfile(){
-                return $this->profile->recupere_Donnee();
-            }
-
-           
-
-            
-    
+          
 
     }
 
