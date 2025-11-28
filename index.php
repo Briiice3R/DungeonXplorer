@@ -18,7 +18,8 @@ $router->set404(function(){
 // Routes
 $router->get('/', "HomeController@index");
 $router->get('/profile', "ProfileController@index");
-$router->get('/updateprofile', "UpdateProfileController@index");
+$router->get('/updateprofile', "ProfileController@show");
+$router->get('/updateprofile', "ProfileController@update");
 
 $router->get('/chapter/{id}', "ChapterController@show");
 // Run it!

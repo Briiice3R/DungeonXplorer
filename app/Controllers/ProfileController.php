@@ -4,16 +4,23 @@
 
     class ProfileController{
 
-        protected Profile $profilecontroller;
+        protected Profile $profileController;
 
         public function __construct(){
-            $this->profilecontroller = new Profile(1); 
+            $this->profileController = new Profile(1); 
         }
-        
+
         public function index()
         {
-            $profilecontroller = $this->profilecontroller;
+            $profileController = $this->profileController;
             include __DIR__ . "/../../resources/views/ProfilePage.php";     
+        }
+
+        public function show()
+        {
+            $updateProfileController = $this->profileController;
+            include __DIR__ . "/../../resources/views/UpdateProfilePage.php"; 
+
         }
     }
 ?>
