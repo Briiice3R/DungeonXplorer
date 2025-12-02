@@ -41,8 +41,8 @@ abstract class Hero{
                    $initiative,
         User       $user,
         ?Inventory $inventoryItems,
-        ?HeroType  $heroType,
-        ?Level     $level,
+        HeroType  $heroType,
+        Level     $level,
         ?Armor     $armor,
         ?Weapon    $primaryWeapon,
         ?Weapon    $secondaryWeapon

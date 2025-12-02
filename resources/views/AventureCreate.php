@@ -45,14 +45,20 @@
 
     <!-- Contenu Principale droite -->
     <section>
-        <h1><?php echo $herotype->getName()(); ?></h1>
+        <?php
+        /** @var HeroType $herotype */
+            foreach($heroTypeArr as $herotype){
+                
+            }
+        ?>
+        <h1><?php echo $herotype->getName(); ?></h1>
         <img src="<?php echo $herotype->getImage(); ?>" alt="Image du hero" style="max-width: 100%; height: auto;">
-        <p><?php echo $herotype->getDescription(); ?></p>
-        <p><?php echo $herotype->getMax_pv(); ?></p>
-        <p><?php echo $herotype->getMax_mana(); ?></p>
-        <p><?php echo $herotype->getMax_strength(); ?></p>
-        <p><?php echo $herotype->getMax_initiative(); ?></p>
-        <p><?php echo $herotype->getMax_items(); ?></p>
+        <p>Description: <?php echo $herotype->getDescription(); ?></p>
+        <p>Points de Vie Max: <?php echo $herotype->getMaxPv(); ?></p>
+        <p>Mana Max: <?php echo $herotype->getMaxMana(); ?></p>
+        <p>Force Max: <?php echo $herotype->getMaxStrength(); ?></p>
+        <p>Initiative Max: <?php echo $herotype->getMaxInitiative(); ?></p>
+        <p>Objets Max: <?php echo $herotype->getMaxItems(); ?></p>
     </section>
 
     <!-- Footer -->
