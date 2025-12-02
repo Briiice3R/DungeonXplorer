@@ -1,15 +1,15 @@
 <?php
 
 namespace App\Models;
-
+use App\Core\Database;
 class Spell
 {
-    private string $id;
+    private ?int $id;
     private string $name;
     private string $description;
     private float $manaCost;
 
-    public function __construct(string $id, string $name, string $description, float $manaCost)
+    public function __construct($id, $name, $description, $manaCost)
     {
         $this->id = $id;
         $this->name = $name;
@@ -17,7 +17,7 @@ class Spell
         $this->manaCost = $manaCost;
     }
 
-    public function getId(): string
+    public function getId(): int
     {
         return $this->id;
     }
@@ -31,5 +31,36 @@ class Spell
     public function getManaCost(): float
     {
         return $this->manaCost;
+    }
+
+    public function save(){
+        $db = Database::getInstance();
+        if($this->id === null){
+            $stmt = $db->prepare("INSERT INTO spell (name, description, mana_cost) VALUES (:name, :description, :mana_cost)");
+            $stmt->bindParam(':name', $this->name);
+            $stmt->bindParam(':description', $this->description);
+            $stmt->bindParam(':mana_cost', $this->manaCost);
+            $stmt->execute();
+            $this->id = $db->lastInsertId();
+        } else {
+            $stmt = $db->prepare("UPDATE spells SET name = :name, description = :description, mana_cost = :mana_cost WHERE id = :id");
+            $stmt->bindParam(':name', $this->name);
+            $stmt->bindParam(':description', $this->description);
+            $stmt->bindParam(':mana_cost', $this->manaCost);
+            $stmt->bindParam(':id', $this->id);
+            $stmt->execute();
+        }
+    }
+
+    public static function find($id){
+        $db = Database::getInstance();
+        $stmt = $db->prepare("SELECT * FROM spell WHERE id = :id");
+        $stmt->bindParam(':id', $id);
+        $stmt->execute();
+        $data = $stmt->fetch(\PDO::FETCH_ASSOC);
+        if(!$data){
+            return null;
+        }
+        return new Spell($data['id'], $data['name'], $data['description'], $data['mana_cost']);
     }
 }
