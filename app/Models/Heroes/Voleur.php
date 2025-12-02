@@ -1,5 +1,5 @@
 <?php
-namespace App\Models\Heros;
+namespace App\Models\Heroes;
 
 class Voleur extends Hero{
 

@@ -1,9 +1,10 @@
 <?php
-namespace App\Models\Heros;
+namespace App\Models\Heroes;
 use App\Models\Spell;
 
 class Magicien extends Hero{
 
+    /*** @var array<Spell> $spells*/
     private array $spells = [];
     public function __construct(
         $id,
@@ -29,30 +30,35 @@ class Magicien extends Hero{
             $name,
             $image,
             $biography,
-            $pv,
-            $initiative,
-            $strength,
-            $mana,
             $xp,
+            $pv,
+            $mana,
+            $strength,
+            $initiative,
+            $user,
+            $inventory,
+            $heroType,
+            $level,
             $armor,
             $primaryWeapon,
             $secondaryWeapon,
-            $level,
-            $user,
-            $heroType
         );
 
         $this->spells=$spells;
     }
+
+
 
     public function defense():float{
         return rand(1, 6) + $this->strength/2 + ($this->armor ? $this->armor->getProtection() : 0);
     }
 
     public function magicAttack(Hero $target, Spell $spell):void{
-        $attack = (rand(1,6) + rand(1,6)) + $spell->getManaCost();
-        $this->mana -= $spell->getManaCost();
-        $damage = max(0, $attack - $this->defense());
-        $target->receiveDamage($damage);
+        if($this->getMana() >= $spell->getManaCost()){
+            $attack = (rand(1,6) + rand(1,6)) + $spell->getManaCost();
+            $this->mana -= $spell->getManaCost();
+            $damage = max(0, $attack - $this->defense());
+            $target->receiveDamage($damage);
+        }
     }
 }

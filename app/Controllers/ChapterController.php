@@ -1,6 +1,6 @@
 <?php
 namespace App\Controllers;
-use App\Models\Chapter;
+use App\Models\Chapters\Chapter;
 
 class ChapterController
 {

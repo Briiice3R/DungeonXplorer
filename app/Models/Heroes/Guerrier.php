@@ -1,5 +1,5 @@
 <?php
-namespace App\Models\Heros;
+namespace App\Models\Heroes;
 use App\Models\Items\Potion;
 class Guerrier extends Hero{
 
@@ -13,12 +13,13 @@ class Guerrier extends Hero{
         $mana,
         $strength,
         $initiative,
+        $user,
+        $inventory,
+        $heroType,
+        $level,
         $armor,
         $primaryWeapon,
         $secondaryWeapon,
-        $level,
-        $user,
-        $heroType
     )
     {
         parent::__construct(
@@ -26,22 +27,20 @@ class Guerrier extends Hero{
             $name,
             $image,
             $biography,
-            $pv,
-            $initiative,
-            $strength,
-            $mana,
             $xp,
+            $pv,
+            $mana,
+            $strength,
+            $initiative,
+            $user,
+            $inventory,
+            $heroType,
+            $level,
             $armor,
             $primaryWeapon,
             $secondaryWeapon,
-            $level,
-            $user,
-            $heroType
         );
     }
-
-
-
     public function defense():float{
         return rand(1, 6) + $this->getStrength()/2 + ($this->armor ? $this->armor->getProtection() : 0);
     }
