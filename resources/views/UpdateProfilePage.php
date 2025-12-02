@@ -34,7 +34,10 @@
                     <input name="full_name" class="mb-5 bg-[#2E2E2E] rounded-md p-1" type="text" placeholder='<?php echo $updateProfileController->get_Name()?>'>
                     </br>
                     <label for="gender">Votre genre : </label>
-                    <input name="gender" class="mb-5 bg-[#2E2E2E] rounded-md p-1" type="text" placeholder='<?php echo $updateProfileController->get_Gender()?>'>
+                    <input name="gender" id="femme" value="Femme" class="mb-5 bg-[#2E2E2E] rounded-md p-1" type="radio">
+                    <label for="femme">Femme </label>
+                    <input name="gender" id="homme" value="Homme" class="mb-5 bg-[#2E2E2E] rounded-md p-1" type="radio" >
+                    <label for="homme">Homme </label>
                     </br>
                     <label for="email">Votre adresse mail : </label>
                     <input name="email" class="mb-5 bg-[#2E2E2E] rounded-md p-1" type="text" placeholder='<?php echo $updateProfileController->get_Email()?>'>
