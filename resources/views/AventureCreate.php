@@ -47,6 +47,7 @@
     <section>
         <h1><?php echo $herotype->getName()(); ?></h1>
         <img src="<?php echo $herotype->getImage(); ?>" alt="Image du hero" style="max-width: 100%; height: auto;">
+        <p><?php echo $herotype->getDescription(); ?></p>
         <p><?php echo $herotype->getMax_pv(); ?></p>
         <p><?php echo $herotype->getMax_mana(); ?></p>
         <p><?php echo $herotype->getMax_strength(); ?></p>

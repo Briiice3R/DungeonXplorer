@@ -1,5 +1,6 @@
 <?php
 namespace App\Controllers;
+use App\Models\HeroType;
 
 class AventureController
 {
@@ -7,7 +8,14 @@ class AventureController
 
     public function __construct()
     {
+       // Exemple de héro avec des images
+       $this->heroType[] = new HeroType(
+       
+    );
+
+    $this->heroType[] = new HeroType(
         
+    ); 
 
     }
 
