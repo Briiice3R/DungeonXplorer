@@ -40,7 +40,7 @@
                     <input name="email" class="mb-5 bg-[#2E2E2E] rounded-md p-1" type="text" placeholder='<?php echo $updateProfileController->get_Email()?>'>
                     </br>
                     <label for="date_of_birth">Votre date de naissance : </label>
-                    <input name="date_of_birth" class="mb-5 bg-[#2E2E2E] rounded-md p-1" type="text" placeholder='<?php echo $updateProfileController->get_Date_of_Birth()?>'>
+                    <input name="date_of_birth" class="mb-5 bg-[#2E2E2E] rounded-md p-1" type="date" min="1925-01-01" max="2025-12-02" placeholder='<?php echo $updateProfileController->get_Date_of_Birth()?>'>
                     </br>
                     <div class="flex justify-center ">
                         <a href="/profile" class=" bg-[#C4975E] m-1 hover:bg-[#8B1E1E] rounded-md p-2">Annuler</a>

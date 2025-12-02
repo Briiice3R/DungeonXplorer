@@ -76,13 +76,30 @@
 
     public function maj_Profil($id, $full_name, $date_of_birth, $email, $gender){
         $data = Database::getInstance();
-        $query = $data->prepare(" UPDATE USERS SET full_name= :full_name, date_of_birth = :date_of_birth, email = :email, gender= :gender WHERE id= :id");
-        $query->bindParam(':id', $id);
-        $query->bindParam(':full_name', $full_name);
-        $query->bindParam(':date_of_birth', $date_of_birth);
-        $query->bindParam(':email', $email);
-        $query->bindParam(':gender', $gender);
-        $query->execute();
+        if( $full_name != null ){
+            $query = $data->prepare(" UPDATE USERS SET full_name= :full_name WHERE id= :id");
+            $query->bindParam(':id', $id);
+            $query->bindParam(':full_name', $full_name);
+            $query->execute();
+        }
+        if( $date_of_birth != null){
+            $query = $data->prepare(" UPDATE USERS SET date_of_birth = :date_of_birth WHERE id= :id");
+            $query->bindParam(':id', $id);
+            $query->bindParam(':date_of_birth', $date_of_birth);
+            $query->execute();
+        }
+        if($email !=null){
+            $query = $data->prepare(" UPDATE USERS SET email = :email WHERE id= :id");
+            $query->bindParam(':id', $id);
+            $query->bindParam(':email', $email);
+            $query->execute();
+        }
+        if($gender != null){
+            $query = $data->prepare(" UPDATE USERS SET gender= :gender WHERE id= :id");
+            $query->bindParam(':id', $id);
+            $query->bindParam(':gender', $gender);
+            $query->execute();
+        }
         header('location: /profile');
     }
     
