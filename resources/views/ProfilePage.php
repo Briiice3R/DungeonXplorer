@@ -36,7 +36,7 @@
                 <p class="mb-8">Date de création du compte : <?php echo $profileController->get_Create_at()?></p>
                 <div class="flex justify-center">
                         <a href="/updateprofile" class=" bg-[#C4975E] m-1 hover:bg-[#8B1E1E] rounded-md p-2">Modifier</a>
-                        <a class=" bg-[#C4975E] m-1 hover:bg-[#8B1E1E] rounded-md p-2">Supprimer</a>
+                        <a href="/delete" class=" bg-[#C4975E] m-1 hover:bg-[#8B1E1E] rounded-md p-2">Supprimer</a>
                 </div>
             </div>
         </main>

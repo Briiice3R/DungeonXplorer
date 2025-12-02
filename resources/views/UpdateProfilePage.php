@@ -34,9 +34,9 @@
                     <input name="full_name" class="mb-5 bg-[#2E2E2E] rounded-md p-1" type="text" placeholder='<?php echo $updateProfileController->get_Name()?>'>
                     </br>
                     <label for="gender">Votre genre : </label>
-                    <input name="gender" id="femme" value="Femme" class="mb-5 bg-[#2E2E2E] rounded-md p-1" type="radio">
+                    <input name="gender" value="Femme" class="mb-5 bg-[#2E2E2E] rounded-md p-1" type="radio" <?php if($updateProfileController->get_Gender() == 'Femme') {echo "checked";}?>>
                     <label for="femme">Femme </label>
-                    <input name="gender" id="homme" value="Homme" class="mb-5 bg-[#2E2E2E] rounded-md p-1" type="radio" >
+                    <input name="gender"  value="Homme" class="mb-5 bg-[#2E2E2E] rounded-md p-1" type="radio" <?php if($updateProfileController->get_Gender() == 'Homme') {echo "checked";}?>>
                     <label for="homme">Homme </label>
                     </br>
                     <label for="email">Votre adresse mail : </label>

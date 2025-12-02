@@ -76,6 +76,7 @@
 
     public function maj_Profil($id, $full_name, $date_of_birth, $email, $gender){
         $data = Database::getInstance();
+        
         if( $full_name != null ){
             $query = $data->prepare(" UPDATE USERS SET full_name= :full_name WHERE id= :id");
             $query->bindParam(':id', $id);
@@ -102,9 +103,6 @@
         }
         header('location: /profile');
     }
-    
-
-
 }
 
 
