@@ -1,12 +1,12 @@
 <?php
 
-namespace Src\Core;
+namespace App\Core;
 use \PDO;
 use \PDOException;
 
 
 
-class DatabaseController{
+class Database{
     private static $instance = null;
     private $db;
 
