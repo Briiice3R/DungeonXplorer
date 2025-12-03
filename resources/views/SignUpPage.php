@@ -33,7 +33,7 @@ if (!isset($_SESSION["alreadyUsedUsername"])) {
         ?>
         <label>Password : </label><input id="password_1" name="password_1" type="password">
         <label>Confirm Password : </label><input id="password_2" name="password_2" type="password">
-        <label><input type="radio" name="genre" value="H">Homme</label><label><input type="radio" name="genre" value="F">Femme</label><label><input type="radio" name="genre" value="A">Autre</label>
+        <label><input type="radio" name="genre" value="H">Homme</label><label><input type="radio" name="genre" value="F">Femme</label><label><input type="radio" name="genre" value="A" Checked>Autre</label>
         
         <input type="submit" value="Send">
     </form>
