@@ -6,6 +6,9 @@ if (!isset($_SESSION["alreadyUsedEmail"])) {
 if (!isset($_SESSION["alreadyUsedUsername"])) {
     $_SESSION["alreadyUsedUsername"] = "False";
 }
+if (!isset($_SESSION["registrationError"])) {
+    $_SESSION["registrationError"] = "False";
+}
 ?>
 
 
@@ -19,6 +22,11 @@ if (!isset($_SESSION["alreadyUsedUsername"])) {
 <body>
     <h1>SignUp</h1>
     <form action="/signup" method="POST">
+        <?php 
+            if($_SESSION["registrationError"]=="True"){
+                echo "<label>Une erreur est survenue.</label>";
+            }
+        ?>
         <label>Username : </label><input id="username" name="username" type="text">
         <?php 
             if($_SESSION["alreadyUsedUsername"]=="True"){
