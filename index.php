@@ -19,6 +19,7 @@ $router->set404(function(){
 $router->get('/', "HomeController@index");
 $router->get('/aventureaccueil', "AventureController@index");
 $router->get('/aventurecreate', "AventureController@create");
+$router->post('/hero/create', '\App\Controllers\HeroController@create');
 
 $router->get('/chapter/{id}', "ChapterController@show");
 // Run it!

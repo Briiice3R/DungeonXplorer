@@ -93,12 +93,10 @@ class HeroType{
         $stmt = $pdo->query("SELECT * FROM Hero_type");
         $arr = array();
 
-        while($row = $stmt->fetch(PDO::FETCH_ASSOC)){
+        while($row = $stmt->fetch(\PDO::FETCH_ASSOC)){
             $arr[] = new HeroType($row["id"], $row["name"], $row["description"], $row["image"], $row["max_pv"], $row["max_mana"], $row["max_strength"], $row["max_initiative"], $row["max_items"]);
         }
         return $arr;
-        
-
     }
 
     public function getId(): int {
