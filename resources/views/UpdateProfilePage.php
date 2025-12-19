@@ -29,7 +29,7 @@
             <div class="font-['Roboto'] text-3xl text-[#E5E5E5] mt-8">
                 <h2 class="font-['Pirata_one'] text-5xl text-center text-[#C4975E] mb-6">Votre profil </h2>
                 <hr class="border-[#C4975E] mb-6">
-                <form action="/update" method="POST">
+                <form action='<?php echo "/update/".$updateProfileController->get_Id()?>' method="POST">
                     <label for="full_name">Votre nom : </label>
                     <input name="full_name" class="mb-5 bg-[#2E2E2E] rounded-md p-1" type="text" placeholder='<?php echo $updateProfileController->get_Name()?>'>
                     </br>
@@ -46,7 +46,7 @@
                     <input name="date_of_birth" class="mb-5 bg-[#2E2E2E] rounded-md p-1" type="date" min="1925-01-01" max="2025-12-02" placeholder='<?php echo $updateProfileController->get_Date_of_Birth()?>'>
                     </br>
                     <div class="flex justify-center ">
-                        <a href="/profile" class=" bg-[#C4975E] m-1 hover:bg-[#8B1E1E] rounded-md p-2">Annuler</a>
+                        <a href='<?php echo "/profile/".$updateProfileController->get_Id()?>' class=" bg-[#C4975E] m-1 hover:bg-[#8B1E1E] rounded-md p-2">Annuler</a>
                         <input type="submit" value="Valider" class=" bg-[#C4975E] m-1 hover:bg-[#8B1E1E] rounded-md p-2">
                     </div>
                 </form>

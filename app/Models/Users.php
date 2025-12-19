@@ -3,7 +3,7 @@
     use App\Core\Database;
 
 
-    class Profile{
+    class Users{
 
         protected $full_name;
         protected $email;
@@ -13,6 +13,7 @@
         protected $created_at;
         protected $country_code;
         
+        // Crée un profile à partir de l'id et des autres données d'un compte lié à cet id dans la base de données
         public function __construct($id){
             $this->id = $id;
             $data = $this->recupere_Donnee($id);
@@ -26,45 +27,57 @@
             }
         }
         
+        // Retourne le nom de l'utilisateur
         public function get_Name(){
             return $this->full_name;
         }
 
+        // Modifie le nom de l'utilisateur'
         public function set_Name($name){
             $this-> name = $full_name;
         }
 
+        // Retourne le genre de l'utilisateur
         public function get_Gender(){
             return $this->gender;
         }
 
+        // Modifie le genre de l'utilisateur'
         public function set_Gender($gender){
             $this->gender = $gender;
         }
 
+        // Retourne l'adresse mail de l'utilisateur
         public function get_Email(){
             return $this->email;
         }
 
+        // Modifie l'adresse mail de l'utilisateur'
         public function set_Email($email){
             $this->email = $email;
         }
 
+        // Modifie la date de naissance de l'utilisateur
         public function set_Date_of_Birth($date_of_birth){
             $this->date_of_birth = $date_of_birth;
         }
 
+        // Retourne la date de naissance de l'utilisateur
         public function get_Date_of_Birth(){
            return $this->date_of_birth;
         }
 
+        // Retourne la date de création du compte de l'utilisateur
         public function get_Create_at(){
            return $this->created_at;
         }
 
+        // Retourne l'id lié au compte de l'utilisateur
         public function get_Id(){
             return $this->id;
         }
+
+        // Récupère les données du compte dans la base de données
         public function recupere_Donnee($id){
             $data = Database::getInstance();
             $query = $data->prepare("SELECT * FROM USERS  WHERE id = :id");
@@ -73,7 +86,7 @@
             return $query->fetch(\PDO::FETCH_ASSOC);
        
     }
-
+    // Met à jour les informations sur le compte
     public function maj_Profil($id, $full_name, $date_of_birth, $email, $gender){
         $data = Database::getInstance();
         
@@ -102,6 +115,16 @@
             $query->execute();
         }
         header('location: /profile');
+    }
+
+    // Permet de supprimer le compte de la base de données et efface aussi les données de session liées au compte
+    public function supprimer_Profil($id){
+        $data = Database::getInstance();
+        $query = $data->prepare(" DELETE FROM USERS WHERE id= :id");
+        $query->bindParam(':id', $id);
+        $query->execute();
+        session_destroy();
+        session_unset();
     }
 }
 

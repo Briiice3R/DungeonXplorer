@@ -1,35 +1,48 @@
 <?php
     namespace App\Controllers;
-    use App\Models\Profile;
+    use App\Models\Users;
 
     class ProfileController{
 
-        protected Profile $profileController;
+        protected Users $profileController;
 
         public function __construct(){
-            $this->profileController = new Profile(1); 
+            
         }
 
-        public function index()
+        // Affiche la page pour consulter la page de profil
+        public function index($id)
         {
+            $this->profileController = new Users($id); 
             $profileController = $this->profileController;
             include __DIR__ . "/../../resources/views/ProfilePage.php";     
         }
 
-        public function show()
+        // Affiche la page de modification du profile
+        public function show($id)
         {
+            $this->profileController = new Users($id); 
             $updateProfileController = $this->profileController;
             include __DIR__ . "/../../resources/views/UpdateProfilePage.php"; 
 
         }
+        // Met à jours les données d'un utilisateur dans la base de données
+        public function update($id){
+            $this->profileController = new Users($id); 
+            $full_name = htmlSpecialChars($_POST['full_name']);
+            $date_of_birth = htmlSpecialChars($_POST['date_of_birth']);
+            $email = htmlSpecialChars($_POST['email']);
+            $gender = htmlSpecialChars($_POST['gender']);
+            $this->profileController->maj_Profil($id, $full_name, $date_of_birth, $email, $gender);
+             header('location:/profile/'.$id);
+        }
 
-        public function update(){
-            $full_name = $_POST['full_name'];
-            $date_of_birth = $_POST['date_of_birth'];
-            $email = $_POST['email'];
-            $gender = $_POST['gender'];
-            $this->profileController->maj_Profil(1, $full_name, $date_of_birth, $email, $gender);
-             header('location:/profile');
+        // Efface le profile de la base de données
+        public function delete($id){
+            $this->profileController = new Users($id); 
+            $deleteProfileController = $this->profileController;
+            $deleteProfileController->supprimer_Profil($id);
+            header('location: /');
         }
     }
 ?>
