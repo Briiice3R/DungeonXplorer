@@ -7,6 +7,5 @@
 </head>
 <body>
     <h1>HomePage</h1>
-    <a href="/signup"><button>Sign Up</button></a>
 </body>
 </html>

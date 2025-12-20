@@ -26,18 +26,19 @@ class SignUpController{
             switch($retour){
                 case "1":
                     $_SESSION["registrationError"]="True";
+                    break;
                 case "2":
                     $_SESSION["alreadyUsedUsername"]="True";
                     $_SESSION["alreadyUsedEmail"]="False";
-
-                    
+                    break;
                 case "3":
                     $_SESSION["alreadyUsedUsername"]="False";
                     $_SESSION["alreadyUsedEmail"]="True";
-
+                    break;
                 case "4":
                     $_SESSION["alreadyUsedEmail"]="True";
                     $_SESSION["alreadyUsedUsername"]="True";
+                    break;
             }
             include __DIR__ . "/../../resources/views/SignUpPage.php";
         }

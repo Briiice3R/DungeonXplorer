@@ -15,17 +15,19 @@ class Register{
          */
         $alreadyUsedEmail=0;
         $alreadyUsedUsername=0;
-        $username = trim($_POST["username"]);
-        $password = $_POST["password_1"];
-        $email = trim($_POST["email"]);
-        $genre = $_POST["genre"];
+        $username = htmlspecialchars(trim($_POST["username"]));
+        $password = htmlspecialchars($_POST["password_1"]);
+        $email = htmlspecialchars(trim($_POST["email"]));
 
-        $regex_email = "/^(?=.{1,254}$)(?=^[^@]{1,64}@)(?:\"(?:\\\\.|[^\"\\\\])*\"|[A-Za-z0-9!#$%&'*+\\/=?^_`{|}~-]+(?:\\.[A-Za-z0-9!#$%&'*+\\/=?^_`{|}~-]+)*)@(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?)(?:\\.(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?))*$/";
     
-        $req_verif_1 = Database::getInstance()->prepare("SELECT count(*) FROM user_dungeon WHERE email='$email'");
+        $req_verif_1 = Database::getInstance()->prepare("SELECT count(*) FROM User WHERE email=:email");
+        $req_verif_1->bindParam(':email', $email);
         $req_verif_1->execute();
-        $req_verif_2 = Database::getInstance()->prepare("SELECT count(*) FROM user_dungeon WHERE username='$username'");
+
+        $req_verif_2 = Database::getInstance()->prepare("SELECT count(*) FROM User WHERE username=:username");
+        $req_verif_2->bindParam(':username', $username);
         $req_verif_2->execute();
+
         if($req_verif_1->fetchColumn()<1){
             $alreadyUsedEmail=0;
         } else {
@@ -47,15 +49,13 @@ class Register{
         }
 
 
-        if($_POST["password_1"]==$_POST["password_2"] && $username!="" && $password!="" && $email!="" && ($genre=="H"||$genre=="F"||$genre=="A") && /*preg_match($regex_email, $email)*/filter_var($email, FILTER_VALIDATE_EMAIL)){
-            $req = Database::getInstance()->prepare("INSERT INTO user_dungeon (username, password, email, gender, admin) VALUES (:username, :password, :email, :gender, 0)");
+        if($_POST["password_1"]==$_POST["password_2"] && $username!="" && $password!="" && $email!="" && filter_var($email, FILTER_VALIDATE_EMAIL)){
+            $hashPassword = password_hash($password, PASSWORD_DEFAULT);
+            $req = Database::getInstance()->prepare("INSERT INTO User (username, password, email, admin) VALUES (:username, :password, :email, 0)");
             $req->bindParam(':username',$username);
-            $req->bindParam(':password',$password);
+            $req->bindParam(':password',$hashPassword);
             $req->bindParam(':email',$email);
-            $req->bindParam(':gender',$genre);
             $req->execute();
-            $_SESSION["alreadyUsedEmail"]="False";
-            $_SESSION["alreadyUsedUsername"]="False";
             
             return 0;
         } else {
