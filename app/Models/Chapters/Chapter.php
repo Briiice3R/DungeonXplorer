@@ -1,15 +1,20 @@
 <?php
 
 // models/Chapter.php
-namespace App\Models;
+namespace App\Models\Chapters;
+use App\Models\Chapters\ChapterChoice;
 
 class Chapter
 {
-    private $id;
-    private $title;
-    private $description;
-    private $image; 
-    private $choices;
+    private ?int $id;
+    private string $title;
+    private string $description;
+    private string $image;
+
+    /**
+        * @var array<ChapterChoice> $choices
+     */
+    private array $choices;
 
     public function __construct($id, $title, $description, $image, $choices)
     {
@@ -20,27 +25,30 @@ class Chapter
         $this->choices = $choices;
     }
 
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
 
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->title;
     }
 
-    public function getDescription()
+    public function getDescription(): string
     {
         return $this->description;
     }
 
-    public function getImage()
+    public function getImage(): string
     {
         return $this->image; 
     }
 
-    public function getChoices()
+    /**
+        * @return array<ChapterChoice>
+     */
+    public function getChoices(): array
     {
         return $this->choices;
     }
