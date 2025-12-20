@@ -23,5 +23,7 @@ $router->get('/chapter/{id}', "ChapterController@show");
 
 $router->get('/signup', "SignUpController@index");
 $router->post('/signup', "SignUpController@register");
+$router->get('/login', "LoginController@index");
+$router->post('/login', "LoginController@login");
 // Run it!
 $router->run();
