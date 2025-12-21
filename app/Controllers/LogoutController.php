@@ -18,7 +18,7 @@ class LogoutController{
         $logout = new Logout();
         $logout->logout();
 
-        header("Location: /");
+        header("Location: /DungeonXplorer");
         exit;
 
     }

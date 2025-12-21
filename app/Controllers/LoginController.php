@@ -21,7 +21,7 @@ class LoginController{
         if($retour==-1){
             $_SESSION["invalidUsernameNorPassword"]=false;
             $_SESSION["loginError"]=true;
-            header("Location: /login");
+            header("Location: /DungeonXplorer/login");
             exit;
         } else if($retour==-2){
             $_SESSION["invalidUsernameNorPassword"]=true;
@@ -32,14 +32,14 @@ class LoginController{
             $_SESSION["invalidUsernameNorPassword"]=false;
             $_SESSION["loginError"]=false;
             $_SESSION["userId"]=$retour;
-            header("Location: /");
+            header("Location: /DungeonXplorer");
             exit;
         }
     }
 
     public function index(){
         if (isset($_SESSION["userId"]) && !empty($_SESSION["userId"])) {
-            header("Location: /");
+            header("Location: /DungeonXplorer");
             exit;
         } else {
             include __DIR__ . "/../../resources/views/LoginPage.php";
