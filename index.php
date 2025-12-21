@@ -30,8 +30,8 @@ $router->post('/signup', "SignUpController@register");
 $router->get('/login', "LoginController@index");
 $router->post('/login', "LoginController@login");
 $router->get('/logout', "LogoutController@logout");
-$router->get('/forgotPassword', "ResetController@index1");
-$router->post('/forgotPassword', "ResetController@reset");
-$router->get('/checkResetPassword', "ResetController@index2");
+// $router->get('/forgotPassword', "ResetController@index1");
+// $router->post('/forgotPassword', "ResetController@reset");
+// $router->get('/checkResetPassword', "ResetController@index2");
 // Run it!
 $router->run();
