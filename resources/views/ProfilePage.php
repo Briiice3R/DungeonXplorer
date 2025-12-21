@@ -30,7 +30,9 @@
                 <h2 class="font-['Pirata_one'] text-5xl text-center text-[#C4975E] mb-6">Votre profil </h2>
                 <hr class="border-[#C4975E] mb-6">
                 <p class="mb-3">Votre nom : <?php echo $profileController->get_Name() ?> </p>
+                <p class="mb-3">Votre genre : <?php echo $profileController->traduit_genre()?> </p>
                 <p class="mb-3">Votre adresse mail : <?php echo $profileController->get_Email()?> </p>
+                 <p class="mb-8">Date de création du compte : <?php echo $profileController->get_Created_at()?></p>
                 <div class="flex justify-center">
                         <a href='<?php echo "/updateprofile/".$profileController->get_Id()?>' class=" bg-[#C4975E] m-1 hover:bg-[#8B1E1E] rounded-md p-2">Modifier</a>
                         <a href='<?php echo "/delete/".$profileController->get_Id()?>' class=" bg-[#C4975E] m-1 hover:bg-[#8B1E1E] rounded-md p-2">Supprimer</a>

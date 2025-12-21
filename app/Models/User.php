@@ -9,6 +9,8 @@
         protected $email;
         protected $id;
         protected $password;
+        protected $created_at;
+        protected $gender;
         
         
         // Crée un profile à partir de l'id et des autres données d'un compte lié à cet id dans la base de données
@@ -19,6 +21,8 @@
                 $this->username = $data['username'];
                 $this->email  = $data['email'];
                 $this->password = $data['password'];
+                $this->created_at = $data['created_at'];
+                $this->gender = $data['gender'];
             }
         }
         
@@ -40,6 +44,34 @@
         // Modifie l'adresse mail de l'utilisateur'
         public function set_Email($email){
             $this->email = $email;
+        }
+
+        public function get_Created_at(){
+            return $this->created_at;
+        }
+
+        public function set_Gender($gender){
+            $this->gender = $gender;
+        }
+
+        public function get_Gender(){
+            return $this->gender;
+        }
+
+        public function traduit_genre(){
+            if($this->gender == 'female'){
+                return 'femme';
+            }
+            elseif($this->gender == 'male'){
+                return 'homme';
+            }
+            elseif($this->gender == 'other'){
+                return 'autre';
+            }
+            else{
+                return 'ne souhaite pas le communiquer';
+            }
+            
         }
 
         // Modifie le mot de passe de l'utilisateur'
@@ -67,7 +99,7 @@
        
     }
     // Met à jour les informations sur le compte
-    public function maj_Profil($id, $username, $email, $password){
+    public function maj_Profil($id, $username, $email, $password, $gender){
         $data = Database::getInstance();
         
         if( $username != null ){
@@ -87,6 +119,12 @@
             $query = $data->prepare(" UPDATE USERS SET email = :email WHERE id= :id");
             $query->bindParam(':id', $id);
             $query->bindParam(':email', $email);
+            $query->execute();
+        }
+        if($gender !=null){
+            $query = $data->prepare(" UPDATE USERS SET gender = :gender WHERE id= :id");
+            $query->bindParam(':id', $id);
+            $query->bindParam(':gender', $gender);
             $query->execute();
         }
         header('location: /profile');

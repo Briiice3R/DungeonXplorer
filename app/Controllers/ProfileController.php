@@ -32,7 +32,8 @@
             $username = htmlSpecialChars($_POST['username']);  
             $email = htmlSpecialChars($_POST['email']);
             $password = htmlSpecialChars($_POST['password']);
-            $this->profileController->maj_Profil($id, $username, $email, $password);
+            $gender = htmlSpecialChars($_POST['gender']);
+            $this->profileController->maj_Profil($id, $username, $email, $password, $gender);
              header('location:/profile/'.$id);
         }
 

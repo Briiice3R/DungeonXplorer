@@ -33,6 +33,23 @@
                     <label for="username">Votre nom : </label>
                     <input name="username" class="mb-5 bg-[#2E2E2E] rounded-md p-1" type="text" placeholder='<?php echo $updateProfileController->get_Name()?>'>
                     </br>
+                     <label for="gender">Votre genre : </label>
+
+                    <input name="gender" value="female" class="mb-5 bg-[#2E2E2E] rounded-md p-1" type="radio" <?php if($updateProfileController->get_Gender() == 'Female') {echo "checked";}?>>
+                    <label for="femme">femme </label>
+
+                    <input name="gender"  value="male" class="mb-5 bg-[#2E2E2E] rounded-md p-1" type="radio" <?php if($updateProfileController->get_Gender() == 'male') {echo "checked";}?>>
+
+                    <label for="homme">homme </label>
+
+                    <input name="gender"  value="other" class="mb-5 bg-[#2E2E2E] rounded-md p-1" type="radio" <?php if($updateProfileController->get_Gender() == 'other') {echo "checked";}?>>
+
+                    <label for="homme">autre </label>
+                    <input name="gender"  value="prefer_not_to_say" class="mb-5 bg-[#2E2E2E] rounded-md p-1" type="radio" <?php if($updateProfileController->get_Gender() == 'prefer_not_to_say') {echo "checked";}?>>
+
+                    <label for="homme">ne souhaite pas communiquer </label>
+
+                    </br>
                     <label for="email">Votre adresse mail : </label>
                     <input name="email" class="mb-5 bg-[#2E2E2E] rounded-md p-1" type="text" placeholder='<?php echo $updateProfileController->get_Email()?>'>
                     </br>
