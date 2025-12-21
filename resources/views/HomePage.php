@@ -8,6 +8,5 @@
 <body>
     <h1>HomePage</h1>
     
-    <a href="/login"><button>Sign Up</button></a>
 </body>
 </html>

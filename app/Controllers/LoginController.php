@@ -21,10 +21,13 @@ class LoginController{
         if($retour==-1){
             $_SESSION["invalidUsernameNorPassword"]=false;
             $_SESSION["loginError"]=true;
+            header("Location: /login");
+            exit;
         } else if($retour==-2){
             $_SESSION["invalidUsernameNorPassword"]=true;
             $_SESSION["loginError"]=false;
-            include __DIR__ . "/../../resources/views/LoginPage.php";
+            header("Location: /login");
+            exit;
         } else {
             $_SESSION["invalidUsernameNorPassword"]=false;
             $_SESSION["loginError"]=false;
@@ -35,7 +38,7 @@ class LoginController{
     }
 
     public function index(){
-        if (!empty($_SESSION["userId"])) {
+        if (isset($_SESSION["userId"]) && !empty($_SESSION["userId"])) {
             header("Location: /");
             exit;
         } else {

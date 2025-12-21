@@ -7,10 +7,10 @@ class Register{
     function register(){ 
         /* Retourne:
          * 0 si tout c'est bien passé,
-         * 1 si des données sont invalides,
-         * 2 si le nom d'utilisateur est déjà utilisé,
-         * 3 si l'adresse mail est déjà utilisé,
-         * 4 si l'adresse mail et le nom d'utilisateur sont déjà utilisé.
+         * -1 si des données sont invalides,
+         * -2 si le nom d'utilisateur est déjà utilisé,
+         * -3 si l'adresse mail est déjà utilisé,
+         * -4 si l'adresse mail et le nom d'utilisateur sont déjà utilisé.
          */
         $alreadyUsedEmail=0;
         $alreadyUsedUsername=0;
@@ -38,13 +38,13 @@ class Register{
             $alreadyUsedUsername=1;
         }
         if($alreadyUsedUsername==1 && $alreadyUsedEmail==1){
-            return 4;
+            return -4;
         }
         if($alreadyUsedEmail==1){
-            return 3;
+            return -3;
         }
         if($alreadyUsedUsername==1){
-            return 2;
+            return -2;
         }
 
 
@@ -55,10 +55,15 @@ class Register{
             $req->bindParam(':password',$hashPassword);
             $req->bindParam(':email',$email);
             $req->execute();
+
+            $req_id = Database::getInstance()->prepare("SELECT id FROM User WHERE username=:username");
+            $req_id->bindParam(':username', $username);
+            $req_id->execute();
+            $user_id = $req_id->fetchColumn();
             
-            return 0;
+            return $user_id;
         } else {
-            return 1;
+            return -1;
         }
     }
 }

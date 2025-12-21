@@ -54,6 +54,12 @@ if (!isset($_SESSION["registrationError"])) {
         
         <input type="submit" value="S'inscrire" class="w-full bg-[#C4975E] hover:bg-[#8B1E1E] text-white rounded-md p-2 cursor-pointer font-['Pirata_One'] text-2xl">
     </form>
+    <div class="max-w-md mx-auto">
+        <label class="block text-[#C4975E] text-xl mb-2">Déjà un compte ?</label>
+        <a href="/login" class="w-full bg-[#C4975E] hover:bg-[#8B1E1E] text-white rounded-md p-2 cursor-pointer font-['Pirata_One'] text-2xl">
+            Se connecter
+        </a>
+    </div>
 
 </body>
 </html>

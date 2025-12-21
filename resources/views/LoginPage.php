@@ -32,7 +32,6 @@ if (!isset($_SESSION["loginError"])) {
             if($_SESSION["invalidUsernameNorPassword"]==true){
                 echo "<label class='block text-[#8B1E1E] text-xl mb-4'>Nom d'utilisateur et/ou mot de passe incorrectes</label>";
             }
-            echo $_SESSION["userId"];
         ?>
         <label class="block text-[#C4975E] text-xl mb-2">Nom d'utilisateur : </label>
         <input id="username" name="username" type="text" class="w-full bg-[#2E2E2E] border border-[#C4975E] text-[#E5E5E5] rounded p-2 mb-2 focus:outline-none focus:border-[#8B1E1E]" required>
@@ -40,5 +39,12 @@ if (!isset($_SESSION["loginError"])) {
         <input id="password" name="password" type="password" class="w-full bg-[#2E2E2E] border border-[#C4975E] text-[#E5E5E5] rounded p-2 mb-4 focus:outline-none focus:border-[#8B1E1E]" required>
         <input type="submit" value="Se connecter" class="w-full bg-[#C4975E] hover:bg-[#8B1E1E] text-white rounded-md p-2 cursor-pointer font-['Pirata_One'] text-2xl">
     </form>
+    <div class="max-w-md mx-auto">
+        <label class="block text-[#C4975E] text-xl mb-2">Pas de compte ?</label>
+        <a href="/signup" class="w-full bg-[#C4975E] hover:bg-[#8B1E1E] text-white rounded-md p-2 cursor-pointer font-['Pirata_One'] text-2xl">
+            S'inscrire
+        </a>
+    </div>
+
 </body>
 </html>
