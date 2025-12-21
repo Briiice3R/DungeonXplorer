@@ -22,7 +22,7 @@ if (!isset($_SESSION["resetError"])) {
 <body class="font-['Roboto'] text-[#E5E5E5] bg-[#1A1A1A] min-h-screen flex flex-col">
     <h1 class="font-['Pirata_One'] text-5xl text-center text-[#C4975E] mt-8 mb-6">Réinitilisation du mot de passe</h1>
     <div class="max-w-md mx-auto bg-[#2E2E2E] rounded-lg shadow-2xl p-8 border-2 border-[#C4975E]/30">
-        <form action="forgotPassword" method="POST" class="max-w-md mx-auto">
+        <form action="login" method="POST" class="max-w-md mx-auto">
             <?php 
                 if($_SESSION["resetError"]==true){
                     echo "<label class='block text-[#8B1E1E] text-xl mb-4'>Une erreur est survenue.</label>";

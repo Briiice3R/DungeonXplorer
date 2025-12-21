@@ -20,27 +20,24 @@ class Reset{
         $req_verif->execute();
 
         if($req_verif->fetchColumn()>0){
-            //$recordedEmail=1;
             $code = random_int(100000, 999999);
             $hash = password_hash($code, PASSWORD_DEFAULT);
             $expires = date('Y-m-d H:i:s', time() + 900);
         
-            $req_register = Database::getInstance()->prepare("INSERT INTO password_resets (user_email, code_hash, expires_at) VALUES (:email, :code_hash, :expires) ON DUPLICATE KEY UPDATE code_hash = :code_hash, expires_at = :expires");
+            $req_register = Database::getInstance()->prepare("INSERT INTO Password_Resets (user_email, code_hash, expiration_date) VALUES (:email, :code_hash, :expires) ON DUPLICATE KEY UPDATE code_hash = :code_hash, expiration_date = :expires");
             $req_register->bindParam(':email', $email);
             $req_register->bindParam(':code_hash', $hash);
             $req_register->bindParam(':expires', $expires);
             $req_register->execute();
         }
-        
-        
+        $to = $email;
+        $subject = "Réinitialisation de votre mot de passe";
+        $message = "Bonjour,\n\nVoici votre code de réinitialisation : $code\nIl expire dans 15 minutes.";
+        $headers = "From: no-reply@tonsite.com\r\n";
+        $headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
 
 
-
-        
-
-
-
-        
+        return 0;  
     }
 }
 ?>
