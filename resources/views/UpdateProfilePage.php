@@ -30,20 +30,14 @@
                 <h2 class="font-['Pirata_one'] text-5xl text-center text-[#C4975E] mb-6">Votre profil </h2>
                 <hr class="border-[#C4975E] mb-6">
                 <form action='<?php echo "/update/".$updateProfileController->get_Id()?>' method="POST">
-                    <label for="full_name">Votre nom : </label>
-                    <input name="full_name" class="mb-5 bg-[#2E2E2E] rounded-md p-1" type="text" placeholder='<?php echo $updateProfileController->get_Name()?>'>
-                    </br>
-                    <label for="gender">Votre genre : </label>
-                    <input name="gender" value="Femme" class="mb-5 bg-[#2E2E2E] rounded-md p-1" type="radio" <?php if($updateProfileController->get_Gender() == 'Femme') {echo "checked";}?>>
-                    <label for="femme">Femme </label>
-                    <input name="gender"  value="Homme" class="mb-5 bg-[#2E2E2E] rounded-md p-1" type="radio" <?php if($updateProfileController->get_Gender() == 'Homme') {echo "checked";}?>>
-                    <label for="homme">Homme </label>
+                    <label for="username">Votre nom : </label>
+                    <input name="username" class="mb-5 bg-[#2E2E2E] rounded-md p-1" type="text" placeholder='<?php echo $updateProfileController->get_Name()?>'>
                     </br>
                     <label for="email">Votre adresse mail : </label>
                     <input name="email" class="mb-5 bg-[#2E2E2E] rounded-md p-1" type="text" placeholder='<?php echo $updateProfileController->get_Email()?>'>
                     </br>
-                    <label for="date_of_birth">Votre date de naissance : </label>
-                    <input name="date_of_birth" class="mb-5 bg-[#2E2E2E] rounded-md p-1" type="date" min="1925-01-01" max="2025-12-02" placeholder='<?php echo $updateProfileController->get_Date_of_Birth()?>'>
+                    <label for="password">Votre mot de passe : </label>
+                    <input name="password" class="mb-5 bg-[#2E2E2E] rounded-md p-1" type="password" min="1925-01-01" max="2025-12-02">
                     </br>
                     <div class="flex justify-center ">
                         <a href='<?php echo "/profile/".$updateProfileController->get_Id()?>' class=" bg-[#C4975E] m-1 hover:bg-[#8B1E1E] rounded-md p-2">Annuler</a>

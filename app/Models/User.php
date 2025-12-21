@@ -3,48 +3,33 @@
     use App\Core\Database;
 
 
-    class Users{
+    class User{
 
-        protected $full_name;
+        protected $username;
         protected $email;
         protected $id;
-        protected $gender;
-        protected $date_of_birth;
-        protected $created_at;
-        protected $country_code;
+        protected $password;
+        
         
         // Crée un profile à partir de l'id et des autres données d'un compte lié à cet id dans la base de données
         public function __construct($id){
             $this->id = $id;
             $data = $this->recupere_Donnee($id);
             if ($data) {
-                $this->full_name  = $data['full_name'];
-                $this->gender = $data['gender'];
+                $this->username = $data['username'];
                 $this->email  = $data['email'];
-                $this->date_of_birth = $data['date_of_birth'];
-                $this->created_at = $data['created_at'];
-                $this->country_code = $data['country_code'];
+                $this->password = $data['password'];
             }
         }
         
         // Retourne le nom de l'utilisateur
         public function get_Name(){
-            return $this->full_name;
+            return $this->username;
         }
 
         // Modifie le nom de l'utilisateur'
         public function set_Name($name){
-            $this-> name = $full_name;
-        }
-
-        // Retourne le genre de l'utilisateur
-        public function get_Gender(){
-            return $this->gender;
-        }
-
-        // Modifie le genre de l'utilisateur'
-        public function set_Gender($gender){
-            $this->gender = $gender;
+            $this-> name = $username;
         }
 
         // Retourne l'adresse mail de l'utilisateur
@@ -57,21 +42,16 @@
             $this->email = $email;
         }
 
-        // Modifie la date de naissance de l'utilisateur
-        public function set_Date_of_Birth($date_of_birth){
-            $this->date_of_birth = $date_of_birth;
+        // Modifie le mot de passe de l'utilisateur'
+        public function set_Password($password){
+            $this->password = $password;
         }
 
-        // Retourne la date de naissance de l'utilisateur
-        public function get_Date_of_Birth(){
-           return $this->date_of_birth;
+        // Modifie le mot de passe de l'utilisateur'
+        public function get_Password(){
+           return $this->password;
         }
-
-        // Retourne la date de création du compte de l'utilisateur
-        public function get_Create_at(){
-           return $this->created_at;
-        }
-
+        
         // Retourne l'id lié au compte de l'utilisateur
         public function get_Id(){
             return $this->id;
@@ -87,31 +67,26 @@
        
     }
     // Met à jour les informations sur le compte
-    public function maj_Profil($id, $full_name, $date_of_birth, $email, $gender){
+    public function maj_Profil($id, $username, $email, $password){
         $data = Database::getInstance();
         
-        if( $full_name != null ){
-            $query = $data->prepare(" UPDATE USERS SET full_name= :full_name WHERE id= :id");
+        if( $username != null ){
+            $query = $data->prepare(" UPDATE USERS SET username= :username WHERE id= :id");
             $query->bindParam(':id', $id);
-            $query->bindParam(':full_name', $full_name);
+            $query->bindParam(':username', $username);
             $query->execute();
         }
-        if( $date_of_birth != null){
-            $query = $data->prepare(" UPDATE USERS SET date_of_birth = :date_of_birth WHERE id= :id");
+        if( $password != null ){
+            $hash = password_hash($password, PASSWORD_BCRYPT);
+            $query = $data->prepare(" UPDATE USERS SET password = :password WHERE id= :id");
             $query->bindParam(':id', $id);
-            $query->bindParam(':date_of_birth', $date_of_birth);
+            $query->bindParam(':password', $hash);
             $query->execute();
         }
         if($email !=null){
             $query = $data->prepare(" UPDATE USERS SET email = :email WHERE id= :id");
             $query->bindParam(':id', $id);
             $query->bindParam(':email', $email);
-            $query->execute();
-        }
-        if($gender != null){
-            $query = $data->prepare(" UPDATE USERS SET gender= :gender WHERE id= :id");
-            $query->bindParam(':id', $id);
-            $query->bindParam(':gender', $gender);
             $query->execute();
         }
         header('location: /profile');
