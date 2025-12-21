@@ -29,5 +29,6 @@ $router->get('/signup', "SignUpController@index");
 $router->post('/signup', "SignUpController@register");
 $router->get('/login', "LoginController@index");
 $router->post('/login', "LoginController@login");
+$router->get('/logout', "LogoutController@logout");
 // Run it!
 $router->run();
