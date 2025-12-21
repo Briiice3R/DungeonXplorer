@@ -9,12 +9,13 @@ class LoginController{
 
     public function __construct()
     {
-        
+
 
     }
     
     public function login()
     {
+
         $login = new Login();
         $retour = $login->login();
         if($retour==-1){
@@ -34,10 +35,7 @@ class LoginController{
     }
 
     public function index(){
-        if (!isset($_SESSION["userId"])) {
-            $_SESSION["userId"] = "";
-        }
-        if($_SESSION["userId"]!=""){
+        if (!empty($_SESSION["userId"])) {
             header("Location: /");
             exit;
         } else {

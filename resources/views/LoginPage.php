@@ -1,5 +1,4 @@
 <?php
-use App\Utils\SessionInitializer;
 if (!isset($_SESSION["invalidUsernameNorPassword"])) {
     $_SESSION["invalidUsernameNorPassword"] = false;
 }

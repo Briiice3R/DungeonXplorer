@@ -5,11 +5,11 @@ use App\Models\Register;
 
 
 
+
 class SignUpController{
 
     public function __construct()
     {
-        
 
     }
     
