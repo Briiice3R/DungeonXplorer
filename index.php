@@ -30,5 +30,7 @@ $router->post('/signup', "SignUpController@register");
 $router->get('/login', "LoginController@index");
 $router->post('/login', "LoginController@login");
 $router->get('/logout', "LogoutController@logout");
+$router->get('/forgotPassword', "ResetController@index");
+
 // Run it!
 $router->run();

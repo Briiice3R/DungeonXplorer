@@ -48,7 +48,7 @@ class Register{
         }
 
 
-        if($_POST["password_1"]==$_POST["password_2"] && $username!="" && $password!="" && $email!="" && filter_var($email, FILTER_VALIDATE_EMAIL)){
+        if($_POST["password_1"]==$_POST["password_2"] && $username!="" && $password!="" && $email!="" && filter_var($email, FILTER_VALIDATE_EMAIL) && strlen($username)<=100 && strlen($password)<=255 && strlen($email)<=254){
             $hashPassword = password_hash($password, PASSWORD_DEFAULT);
             $req = Database::getInstance()->prepare("INSERT INTO User (username, password, email, admin) VALUES (:username, :password, :email, 0)");
             $req->bindParam(':username',$username);
