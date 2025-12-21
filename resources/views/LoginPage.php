@@ -1,7 +1,10 @@
 <?php
 use App\Utils\SessionInitializer;
 if (!isset($_SESSION["invalidUsernameNorPassword"])) {
-    $_SESSION["invalidUsernameNorPassword"] = "False";
+    $_SESSION["invalidUsernameNorPassword"] = false;
+}
+if (!isset($_SESSION["loginError"])) {
+    $_SESSION["loginError"] = false;
 }
 ?>
 
@@ -24,32 +27,19 @@ if (!isset($_SESSION["invalidUsernameNorPassword"])) {
     
     <form action="/login" method="POST" class="max-w-md mx-auto">
         <?php 
-            if($_SESSION["loginError"]=="True"){
+            if($_SESSION["loginError"]==true){
                 echo "<label class='block text-[#8B1E1E] text-xl mb-4'>Une erreur est survenue.</label>";
             }
-            if($_SESSION["invalidUsernameNorPassword"]=="True"){
+            if($_SESSION["invalidUsernameNorPassword"]==true){
                 echo "<label class='block text-[#8B1E1E] text-xl mb-4'>Nom d'utilisateur et/ou mot de passe incorrectes</label>";
             }
+            echo $_SESSION["userId"];
         ?>
         <label class="block text-[#C4975E] text-xl mb-2">Nom d'utilisateur : </label>
         <input id="username" name="username" type="text" class="w-full bg-[#2E2E2E] border border-[#C4975E] text-[#E5E5E5] rounded p-2 mb-2 focus:outline-none focus:border-[#8B1E1E]" required>
-        <?php 
-            if($_SESSION["alreadyUsedUsername"]=="True"){
-                echo "<label class='block text-[#8B1E1E] mb-4'>Nom d'utilisateur déjà utilisé</label>";
-            }
-        ?>
-        <label class="block text-[#C4975E] text-xl mb-2">Adresse email : </label>
-        <input id="email" name="email" type="email" class="w-full bg-[#2E2E2E] border border-[#C4975E] text-[#E5E5E5] rounded p-2 mb-2 focus:outline-none focus:border-[#8B1E1E]" required>
-        <?php 
-            if($_SESSION["alreadyUsedEmail"]=="True"){
-                echo "<label class='block text-[#8B1E1E] mb-4'>Adresse email déjà utilisé</label>";
-            }
-        ?>
         <label class="block text-[#C4975E] text-xl mb-2">Mot de passe : </label>
-        <input id="password_1" name="password_1" type="password" class="w-full bg-[#2E2E2E] border border-[#C4975E] text-[#E5E5E5] rounded p-2 mb-4 focus:outline-none focus:border-[#8B1E1E]" required>
-        
+        <input id="password" name="password" type="password" class="w-full bg-[#2E2E2E] border border-[#C4975E] text-[#E5E5E5] rounded p-2 mb-4 focus:outline-none focus:border-[#8B1E1E]" required>
         <input type="submit" value="Se connecter" class="w-full bg-[#C4975E] hover:bg-[#8B1E1E] text-white rounded-md p-2 cursor-pointer font-['Pirata_One'] text-2xl">
     </form>
-
 </body>
 </html>

@@ -1,11 +1,11 @@
 <?php
 namespace App\Controllers;
 use Throwable;
-use App\Models\Register;
+use App\Models\Login;
 
 
 
-class SignUpController{
+class LoginController{
 
     public function __construct()
     {
@@ -15,19 +15,33 @@ class SignUpController{
     
     public function login()
     {
-        $reg = new Register();
-        $retour = $reg->register();
-        if($retour==0){
-            $_SESSION["invalidUsernameNorPassword"]="False";
-            include __DIR__ . "/../../resources/views/HomePage.php";
-        } else {
-            $_SESSION["invalidUsernameNorPassword"]="True";
+        $login = new Login();
+        $retour = $login->login();
+        if($retour==-1){
+            $_SESSION["invalidUsernameNorPassword"]=false;
+            $_SESSION["loginError"]=true;
+        } else if($retour==-2){
+            $_SESSION["invalidUsernameNorPassword"]=true;
+            $_SESSION["loginError"]=false;
             include __DIR__ . "/../../resources/views/LoginPage.php";
+        } else {
+            $_SESSION["invalidUsernameNorPassword"]=false;
+            $_SESSION["loginError"]=false;
+            $_SESSION["userId"]=$retour;
+            header("Location: /");
+            exit;
         }
-        
     }
 
     public function index(){
-        include __DIR__ . "/../../resources/views/LoginPage.php";
+        if (!isset($_SESSION["userId"])) {
+            $_SESSION["userId"] = "";
+        }
+        if($_SESSION["userId"]!=""){
+            header("Location: /");
+            exit;
+        } else {
+            include __DIR__ . "/../../resources/views/LoginPage.php";
+        }
     }
 }

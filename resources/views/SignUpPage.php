@@ -1,13 +1,13 @@
 <?php
 use App\Utils\SessionInitializer;
 if (!isset($_SESSION["alreadyUsedEmail"])) {
-    $_SESSION["alreadyUsedEmail"] = "False";
+    $_SESSION["alreadyUsedEmail"] = false;
 }
 if (!isset($_SESSION["alreadyUsedUsername"])) {
-    $_SESSION["alreadyUsedUsername"] = "False";
+    $_SESSION["alreadyUsedUsername"] = false;
 }
 if (!isset($_SESSION["registrationError"])) {
-    $_SESSION["registrationError"] = "False";
+    $_SESSION["registrationError"] = false;
 }
 ?>
 
@@ -30,21 +30,21 @@ if (!isset($_SESSION["registrationError"])) {
     
     <form action="/signup" method="POST" class="max-w-md mx-auto">
         <?php 
-            if($_SESSION["registrationError"]=="True"){
+            if($_SESSION["registrationError"]==true){
                 echo "<label class='block text-[#8B1E1E] text-xl mb-4'>Une erreur est survenue.</label>";
             }
         ?>
         <label class="block text-[#C4975E] text-xl mb-2">Nom d'utilisateur : </label>
         <input id="username" name="username" type="text" class="w-full bg-[#2E2E2E] border border-[#C4975E] text-[#E5E5E5] rounded p-2 mb-2 focus:outline-none focus:border-[#8B1E1E]" required>
         <?php 
-            if($_SESSION["alreadyUsedUsername"]=="True"){
+            if($_SESSION["alreadyUsedUsername"]==true){
                 echo "<label class='block text-[#8B1E1E] mb-4'>Nom d'utilisateur déjà utilisé</label>";
             }
         ?>
         <label class="block text-[#C4975E] text-xl mb-2">Adresse email : </label>
         <input id="email" name="email" type="email" class="w-full bg-[#2E2E2E] border border-[#C4975E] text-[#E5E5E5] rounded p-2 mb-2 focus:outline-none focus:border-[#8B1E1E]" required>
         <?php 
-            if($_SESSION["alreadyUsedEmail"]=="True"){
+            if($_SESSION["alreadyUsedEmail"]==true){
                 echo "<label class='block text-[#8B1E1E] mb-4'>Adresse email déjà utilisé</label>";
             }
         ?>

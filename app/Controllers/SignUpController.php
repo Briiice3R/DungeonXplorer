@@ -18,26 +18,27 @@ class SignUpController{
         $reg = new Register();
         $retour = $reg->register();
         if($retour==0){
-            $_SESSION["alreadyUsedUsername"]="False";
-            $_SESSION["alreadyUsedEmail"]="False";
-            $_SESSION["registrationError"]="False";
-            include __DIR__ . "/../../resources/views/HomePage.php";
+            $_SESSION["alreadyUsedUsername"]=false;
+            $_SESSION["alreadyUsedEmail"]=false;
+            $_SESSION["registrationError"]=false;
+            header("Location: /");
+            exit;
         } else {
             switch($retour){
-                case "1":
-                    $_SESSION["registrationError"]="True";
+                case 1:
+                    $_SESSION["registrationError"]=true;
                     break;
-                case "2":
-                    $_SESSION["alreadyUsedUsername"]="True";
-                    $_SESSION["alreadyUsedEmail"]="False";
+                case 2:
+                    $_SESSION["alreadyUsedUsername"]=true;
+                    $_SESSION["alreadyUsedEmail"]=false;
                     break;
-                case "3":
-                    $_SESSION["alreadyUsedUsername"]="False";
-                    $_SESSION["alreadyUsedEmail"]="True";
+                case 3:
+                    $_SESSION["alreadyUsedUsername"]=false;
+                    $_SESSION["alreadyUsedEmail"]=true;
                     break;
-                case "4":
-                    $_SESSION["alreadyUsedEmail"]="True";
-                    $_SESSION["alreadyUsedUsername"]="True";
+                case 4:
+                    $_SESSION["alreadyUsedEmail"]=true;
+                    $_SESSION["alreadyUsedUsername"]=true;
                     break;
             }
             include __DIR__ . "/../../resources/views/SignUpPage.php";

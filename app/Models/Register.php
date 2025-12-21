@@ -15,9 +15,9 @@ class Register{
          */
         $alreadyUsedEmail=0;
         $alreadyUsedUsername=0;
-        $username = htmlspecialchars(trim($_POST["username"]));
-        $password = htmlspecialchars($_POST["password_1"]);
-        $email = htmlspecialchars(trim($_POST["email"]));
+        $username = trim($_POST["username"]);
+        $password = $_POST["password_1"];
+        $email = trim($_POST["email"]);
 
     
         $req_verif_1 = Database::getInstance()->prepare("SELECT count(*) FROM User WHERE email=:email");
