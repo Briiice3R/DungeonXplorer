@@ -92,7 +92,7 @@
         // Récupère les données du compte dans la base de données
         public function recupere_Donnee($id){
             $data = Database::getInstance();
-            $query = $data->prepare("SELECT * FROM USER  WHERE id = :id");
+            $query = $data->prepare("SELECT * FROM User  WHERE id = :id");
             $query->bindParam(':id', $id);
             $query->execute();
             return $query->fetch(\PDO::FETCH_ASSOC);
@@ -103,26 +103,26 @@
         $data = Database::getInstance();
         
         if( $username != null ){
-            $query = $data->prepare(" UPDATE USER SET username= :username WHERE id= :id");
+            $query = $data->prepare(" UPDATE User SET username= :username WHERE id= :id");
             $query->bindParam(':id', $id);
             $query->bindParam(':username', $username);
             $query->execute();
         }
         if( $password != null ){
             $hash = password_hash($password, PASSWORD_BCRYPT);
-            $query = $data->prepare(" UPDATE USER SET password = :password WHERE id= :id");
+            $query = $data->prepare(" UPDATE User SET password = :password WHERE id= :id");
             $query->bindParam(':id', $id);
             $query->bindParam(':password', $hash);
             $query->execute();
         }
         if($email !=null){
-            $query = $data->prepare(" UPDATE USER SET email = :email WHERE id= :id");
+            $query = $data->prepare(" UPDATE User SET email = :email WHERE id= :id");
             $query->bindParam(':id', $id);
             $query->bindParam(':email', $email);
             $query->execute();
         }
         if($gender !=null){
-            $query = $data->prepare(" UPDATE USER SET gender = :gender WHERE id= :id");
+            $query = $data->prepare(" UPDATE User SET gender = :gender WHERE id= :id");
             $query->bindParam(':id', $id);
             $query->bindParam(':gender', $gender);
             $query->execute();
@@ -133,7 +133,7 @@
     // Permet de supprimer le compte de la base de données et efface aussi les données de session liées au compte
     public function supprimer_Profil($id){
         $data = Database::getInstance();
-        $query = $data->prepare(" DELETE FROM USER WHERE id= :id");
+        $query = $data->prepare(" DELETE FROM User WHERE id= :id");
         $query->bindParam(':id', $id);
         $query->execute();
         session_destroy();
