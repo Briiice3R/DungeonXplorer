@@ -56,7 +56,7 @@ if (!isset($_SESSION["registrationError"])) {
         </form>
         <hr class="border-t-2 border-[#C4975E] mb-2 mt-4">
         <label class="block text-center text-[#C4975E] text-xl mb-2">Déjà un compte ?</label>
-        <a href="/login" class="block w-full bg-[#C4975E] hover:bg-[#8B1E1E] text-white rounded-md p-2 cursor-pointer font-['Pirata_One'] text-2xl text-center">
+        <a href="DungeonXplorer/login" class="block w-full bg-[#C4975E] hover:bg-[#8B1E1E] text-white rounded-md p-2 cursor-pointer font-['Pirata_One'] text-2xl text-center">
             Se connecter
         </a>
     </div>
