@@ -17,6 +17,10 @@ $router->set404(function(){
 
 // Routes
 $router->get('/', "HomeController@index");
+$router->get('/profile/{id}', "ProfileController@index");
+$router->get('/updateprofile/{id}', "ProfileController@show");
+$router->post('/update/{id}', "ProfileController@update");
+$router->get('/delete/{id}', "ProfileController@delete");
 $router->get('/start-adventure', "HomeController@index");
 
 
