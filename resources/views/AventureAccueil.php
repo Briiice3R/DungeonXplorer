@@ -1,13 +1,3 @@
-<?php
-session_start();
-include_once "pdo_agile.php";
-include_once "connexion.php";
-$db_username = $db_usernameOracle;		
-$db_password = $db_passwordOracle;	
-$db = $dbOracle;
-$conn = OuvrirConnexionPDO($db,$db_username,$db_password);
-?>
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -35,10 +25,10 @@ $conn = OuvrirConnexionPDO($db,$db_username,$db_password);
             <a href="/" class="flex items-center gap-2 bg-[#C4975E] text-[#1A1A1A] px-4 py-2 rounded-md font-['Roboto'] text-base hover:bg-[#8B1E1E] transition-colors">
                 <i class="fas fa-play"></i> Reprendre
             </a>
-            <a href="/" class="flex items-center gap-2 bg-[#C4975E] text-[#1A1A1A] px-4 py-2 rounded-md font-['Roboto'] text-base hover:bg-[#8B1E1E] transition-colors">
+            <a href="aventurecreate" class="flex items-center gap-2 bg-[#C4975E] text-[#1A1A1A] px-4 py-2 rounded-md font-['Roboto'] text-base hover:bg-[#8B1E1E] transition-colors">
                 <i class="fas fa-book"></i> Nouvelle Aventure
             </a>
-            <a href="/" class="flex items-center gap-2 bg-[#C4975E] text-[#1A1A1A] px-4 py-2 rounded-md font-['Roboto'] text-base hover:bg-[#8B1E1E] transition-colors">
+            <a href="logout" class="flex items-center gap-2 bg-[#C4975E] text-[#1A1A1A] px-4 py-2 rounded-md font-['Roboto'] text-base hover:bg-[#8B1E1E] transition-colors">
                 <i class="fas fa-sign-out-alt"></i> Déconnexion
             </a>
         </div>

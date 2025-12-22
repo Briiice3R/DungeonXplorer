@@ -1,6 +1,9 @@
 <?php
 namespace App\Models\Heroes;
 
+use App\Models\User;
+use App\Models\Level;
+
 class Voleur extends Hero{
 
     public function __construct(

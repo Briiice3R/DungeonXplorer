@@ -1,6 +1,8 @@
 <?php
 namespace App\Models\Heroes;
 use App\Models\Spell;
+use App\Models\User;
+use App\Models\Level;
 
 class Magicien extends Hero{
 

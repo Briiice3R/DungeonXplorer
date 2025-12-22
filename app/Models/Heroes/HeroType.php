@@ -4,8 +4,8 @@ use App\Core\Database;
 class HeroType{
     protected ?int $id;
     protected string $name;
-    protected string $description;
     protected string $image;
+    protected string $description;
     protected float $maxPv;
     protected float $maxMana;
     protected float $maxStrength;
@@ -15,8 +15,8 @@ class HeroType{
     public function __construct(
         $id,
         $name,
-        $description,
         $image,
+        $description,
         $maxPv,
         $maxMana,
         $maxStrength,
@@ -26,8 +26,8 @@ class HeroType{
     {
         $this->id = $id;
         $this->name = $name;
-        $this->description = $description;
         $this->image = $image;
+        $this->description = $description;
         $this->maxPv = $maxPv;
         $this->maxMana = $maxMana;
         $this->maxStrength = $maxStrength;
@@ -38,7 +38,7 @@ class HeroType{
     public function save(){
         $db = Database::getInstance();
         if($this->id === null){
-            $stmt = $db->prepare("INSERT INTO hero_type (name, image, description, max_pv, max_mana, max_strength, max_initiative, max_items) VALUES (:name, :image, :description, :max_pv, :max_mana, :max_strength, :max_initiative, :max_items)");
+            $stmt = $db->prepare("INSERT INTO Hero_Type (name, image, description, max_pv, max_mana, max_strength, max_initiative, max_items) VALUES (:name, :image, :description, :max_pv, :max_mana, :max_strength, :max_initiative, :max_items)");
             $stmt->execute([
                 ':name' => $this->name,
                 ':image' => $this->image,
@@ -51,7 +51,7 @@ class HeroType{
             ]);
             $this->id = $db->lastInsertId();
         } else{
-            $stmt = $db->prepare("UPDATE hero_type SET name = :name, image = :image, description = :description, max_pv = :max_pv, max_mana = :max_mana, max_strength = :max_strength, max_initiative = :max_initiative, max_items = :max_items WHERE id = :id");
+            $stmt = $db->prepare("UPDATE Hero_Type SET name = :name, image = :image, description = :description, max_pv = :max_pv, max_mana = :max_mana, max_strength = :max_strength, max_initiative = :max_initiative, max_items = :max_items WHERE id = :id");
             $stmt->execute([
                 ':name' => $this->name,
                 ':image' => $this->image,
@@ -68,9 +68,9 @@ class HeroType{
 
     public static function find($id): ?HeroType {
         $db = Database::getInstance();
-        $stmt = $db->prepare("SELECT * FROM hero_type WHERE id = :id");
+        $stmt = $db->prepare("SELECT * FROM Hero_Type WHERE id = :id");
         $stmt->execute([':id' => $id]);
-        $result = $stmt->fetch();
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
         if (!$result) {
             return null;
         }
@@ -90,11 +90,11 @@ class HeroType{
 
     public static function findAll() {
         $pdo=Database::getInstance();
-        $stmt = $pdo->query("SELECT * FROM Hero_type");
+        $stmt = $pdo->query("SELECT * FROM Hero_Type");
         $arr = array();
 
         while($row = $stmt->fetch(\PDO::FETCH_ASSOC)){
-            $arr[] = new HeroType($row["id"], $row["name"], $row["description"], $row["image"], $row["max_pv"], $row["max_mana"], $row["max_strength"], $row["max_initiative"], $row["max_items"]);
+            $arr[] = new HeroType($row["id"], $row["name"], $row["image"], $row["description"], $row["max_pv"], $row["max_mana"], $row["max_strength"], $row["max_initiative"], $row["max_items"]);
         }
         return $arr;
     }

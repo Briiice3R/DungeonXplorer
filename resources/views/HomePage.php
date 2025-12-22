@@ -1,13 +1,3 @@
-<?php
-session_start();
-include_once "pdo_agile.php";
-include_once "connexion.php";
-$db_username = $db_usernameOracle;		
-$db_password = $db_passwordOracle;	
-$db = $dbOracle;
-$conn = OuvrirConnexionPDO($db,$db_username,$db_password);
-?>
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -35,7 +25,7 @@ $conn = OuvrirConnexionPDO($db,$db_username,$db_password);
         <p class="text-xl mb-6">Bienvenue sur DungeonXplorer, l'univers de dark fantasy où se mêlent aventure, stratégie et immersion
             totale dans les récits interactifs.
         </p>
-        <a href="/aventurecreate" class="bg-[#C4975E] text-[#1A1A1A] px-6 py-3 rounded-lg font-['Pirata_One'] text-xl cursor-pointer hover:bg-[#8B1E1E] transition-colors">
+        <a href="aventurecreate" class="bg-[#C4975E] text-[#1A1A1A] px-6 py-3 rounded-lg font-['Pirata_One'] text-xl cursor-pointer hover:bg-[#8B1E1E] transition-colors">
                 <i class="fas fa-book"></i> Commencer l'aventure
         </a>
     </section>
