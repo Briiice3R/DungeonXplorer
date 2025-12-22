@@ -9,6 +9,7 @@ use App\Models\Heroes\Magicien;
 use App\Models\Heroes\Voleur;
 use App\Models\Level;
 use App\Models\User;
+use App\Core\Database;
 
 class HeroController {
 
@@ -84,13 +85,21 @@ class HeroController {
                 exit();
         }
 
-        // 6. Sauvegarde et Redirection
+        // 6. Sauvegarde, Initialisation Progression et Redirection
         if ($hero) {
             // La méthode save() doit gérer l'INSERT INTO HEROES
             $hero->save(); 
             
-            // On stocke l'ID du héros nouvellement créé pour l'utiliser durant l'aventure
-            $_SESSION['active_hero_id'] = $hero->getId();
+            // On récupère l'ID réel du héros et on l'a stock dans la session
+            $currentHeroId = $hero->getId();
+            $_SESSION['active_hero_id'] = $currentHeroId;
+
+            // --- AJOUT : INITIALISATION DE LA TABLE PROGRESSION ---
+            // On crée la première ligne au chapitre 1 pour que le héros apparaisse dans l'accueil
+            $db = Database::getInstance();
+            $stmt = $db->prepare("INSERT INTO Progression (hero_id, chapter_id, start_date) VALUES (:h, 1, NOW())");
+            $stmt->execute([':h' => $currentHeroId]);
+            // ------------------------------------------------------
 
             // Redirection vers le début de l'histoire
             header("Location: /DungeonXplorer/chapter/1");

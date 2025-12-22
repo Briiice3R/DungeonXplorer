@@ -35,14 +35,17 @@ $router->get('/aventurecreate', "AventureController@create");
 $router->post('/hero/create', "HeroController@create"); 
 $router->get('/choix-hero', "HeroController@index");
 
+// --- Route pour reprendre une aventure spécifique ---
+$router->get('/chapter/reprendre/{heroId}/{chapterId}', 'ChapterController@resume');
+
 // --- Routes Jeu ---
 $router->get('/chapter/{id}', "ChapterController@show");
 
 // --- Routes Jeu ---
 $router->get('/profile/{id}',"ProfileController@index");
 $router->get('/updateprofile/{id}',"ProfileController@show");
-$router->post('/update{id}',"ProfileController@update");
-$router->get('/delete{id}',"ProfileController@delete");
+$router->post('/update/{id}',"ProfileController@update");
+$router->get('/delete/{id}',"ProfileController@delete");
 
 // Run it!
 $router->run();

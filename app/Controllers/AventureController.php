@@ -38,6 +38,20 @@ class AventureController
             exit();
         }
 
+        // On récupère les héros de l'utilisateur qui ont une progression
+        $userId = $_SESSION['userId'];
+        $db = \App\Core\Database::getInstance();
+        
+        // Jointure pour avoir le nom du héros et son chapitre actuel
+        $stmt = $db->prepare("SELECT h.id, h.name, h.image AS hero_img, p.chapter_id, p.start_date, c.title AS chapter_title 
+            FROM Hero h
+            JOIN Progression p ON h.id = p.hero_id
+            JOIN Chapter c ON p.chapter_id = c.id
+            WHERE h.user_id = :u
+            ORDER BY p.start_date DESC");
+        $stmt->execute([':u' => $userId]);
+        $ongoingAdventures = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
         include __DIR__ . "/../../resources/views/AventureAccueil.php";
     }
 }

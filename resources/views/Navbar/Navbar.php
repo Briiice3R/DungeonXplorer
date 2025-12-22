@@ -34,7 +34,7 @@
                 </div>
             <?php else: ?>
                 <div class="flex items-center gap-6">
-                    <a href="/DungeonXplorer/profile/{id}" class="flex items-center gap-2 text-[#C4975E] font-['Pirata_One'] text-2xl no-underline hover:text-white group">
+                    <a href='<?php echo "/DungeonXplorer/profile/" .$_SESSION["userId"];?>' class="flex items-center gap-2 text-[#C4975E] font-['Pirata_One'] text-2xl no-underline hover:text-white group">
                         <i class="fa-solid fa-user text-lg group-hover:animate-bounce"></i>
                         <span>Profil</span>
                     </a>

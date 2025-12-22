@@ -138,7 +138,6 @@
             $query->bindParam(':gender', $gender);
             $query->execute();
         }
-        header('location: /profile');
     }
 
     // Permet de supprimer le compte de la base de données et efface aussi les données de session liées au compte
