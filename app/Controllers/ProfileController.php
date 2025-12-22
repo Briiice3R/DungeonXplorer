@@ -34,7 +34,7 @@
             $password = htmlSpecialChars($_POST['password']);
             $gender = htmlSpecialChars($_POST['gender']);
             $this->profileController->maj_Profil($id, $username, $email, $password, $gender);
-             header('location:/profile/'.$id);
+             header('location: /DungeonXplorer/profile/'.$id);
         }
 
         // Efface le profile de la base de données
@@ -42,7 +42,7 @@
             $this->profileController = new User($id); 
             $deleteProfileController = $this->profileController;
             $deleteProfileController->supprimer_Profil($id);
-            header('location: /');
+            header('location: /DungeonXplorer');
         }
     }
 ?>
