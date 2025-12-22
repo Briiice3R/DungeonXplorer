@@ -5,6 +5,10 @@
 */
 // Require composer autoloader
 require __DIR__ . '/vendor/autoload.php';
+
+session_start();
+
+
 use Bramus\Router\Router;
 // Create Router instance
 $router = new Router();
@@ -26,5 +30,14 @@ $router->get('/start-adventure', "HomeController@index");
 
 
 $router->get('/chapter/{id}', "ChapterController@show");
+
+$router->get('/signup', "SignUpController@index");
+$router->post('/signup', "SignUpController@register");
+$router->get('/login', "LoginController@index");
+$router->post('/login', "LoginController@login");
+$router->get('/logout', "LogoutController@logout");
+// $router->get('/forgotPassword', "ResetController@index1");
+// $router->post('/forgotPassword', "ResetController@reset");
+// $router->get('/checkResetPassword', "ResetController@index2");
 // Run it!
 $router->run();
