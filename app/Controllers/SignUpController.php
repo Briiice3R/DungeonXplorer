@@ -45,7 +45,7 @@ class SignUpController{
                 $_SESSION["alreadyUsedUsername"]=false;
                 $_SESSION["alreadyUsedEmail"]=false;
                 $_SESSION["registrationError"]=false;
-                $_SESSION["userID"]=$retour;
+                $_SESSION["userId"]=$retour;
                 header("Location: /DungeonXplorer");
                 exit;
                 break;
