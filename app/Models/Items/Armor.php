@@ -20,13 +20,13 @@ class Armor extends Item
         parent::save();
         $db = Database::getInstance();
         if($this->id === null){
-            $stmt = $db->prepare("INSERT INTO armor (item_id, protection) VALUES (:item_id, :protection)");
+            $stmt = $db->prepare("INSERT INTO Armor (item_id, protection) VALUES (:item_id, :protection)");
             $this->id = $db->lastInsertId();
             $stmt->execute([
                 ':protection' => $this->protection
             ]);
         } else{
-            $stmt = $db->prepare("UPDATE armor SET protection = :protection WHERE item_id = :item_id");
+            $stmt = $db->prepare("UPDATE Armor SET protection = :protection WHERE item_id = :item_id");
             $stmt->execute([
                 ':item_id' => $this->id,
                 ':protection' => $this->protection
@@ -36,7 +36,7 @@ class Armor extends Item
 
     public static function find($id): ?Armor {
         $db = Database::getInstance();
-        $stmt = $db->prepare("SELECT i.id, i.name, i.description, a.protection FROM item i JOIN armor a ON i.id = a.item_id WHERE i.id = :id");
+        $stmt = $db->prepare("SELECT i.id, i.name, i.description, a.protection FROM item i JOIN Armor a ON i.id = a.item_id WHERE i.id = :id");
         $stmt->execute([':id' => $id]);
         $result = $stmt->fetch();
         if (!$result) {

@@ -36,14 +36,14 @@ class Spell
     public function save(){
         $db = Database::getInstance();
         if($this->id === null){
-            $stmt = $db->prepare("INSERT INTO spell (name, description, mana_cost) VALUES (:name, :description, :mana_cost)");
+            $stmt = $db->prepare("INSERT INTO Spell (name, description, mana_cost) VALUES (:name, :description, :mana_cost)");
             $stmt->bindParam(':name', $this->name);
             $stmt->bindParam(':description', $this->description);
             $stmt->bindParam(':mana_cost', $this->manaCost);
             $stmt->execute();
             $this->id = $db->lastInsertId();
         } else {
-            $stmt = $db->prepare("UPDATE spells SET name = :name, description = :description, mana_cost = :mana_cost WHERE id = :id");
+            $stmt = $db->prepare("UPDATE Spells SET name = :name, description = :description, mana_cost = :mana_cost WHERE id = :id");
             $stmt->bindParam(':name', $this->name);
             $stmt->bindParam(':description', $this->description);
             $stmt->bindParam(':mana_cost', $this->manaCost);
@@ -54,7 +54,7 @@ class Spell
 
     public static function find($id){
         $db = Database::getInstance();
-        $stmt = $db->prepare("SELECT * FROM spell WHERE id = :id");
+        $stmt = $db->prepare("SELECT * FROM Spell WHERE id = :id");
         $stmt->bindParam(':id', $id);
         $stmt->execute();
         $data = $stmt->fetch(\PDO::FETCH_ASSOC);

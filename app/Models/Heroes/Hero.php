@@ -102,7 +102,7 @@ abstract class Hero{
         // 3. Logique : INSERT ou UPDATE ?
         if ($this->id === null) {
             // --- SCÉNARIO CRÉATION (INSERT) ---
-            $sql = "INSERT INTO hero (
+            $sql = "INSERT INTO Hero (
                         name, image, biography, xp, pv, mana, strength, initiative,
                         armor_id, primary_weapon_id, secondary_weapon_id,
                         level, user_id, hero_type_id
@@ -120,7 +120,7 @@ abstract class Hero{
         }
         else {
             // --- SCÉNARIO SAUVEGARDE (UPDATE) ---
-            $sql = "UPDATE hero SET 
+            $sql = "UPDATE Hero SET 
                         name = :name,
                         image = :image,
                         biography = :bio,
@@ -148,7 +148,9 @@ abstract class Hero{
     public static function find(int $id): ?Hero{
         // Cette méthode sera implémentée dans les classes filles
         $db = Database::getInstance();
-        $sql = "SELECT hero_type_id FROM hero WHERE id = :id";
+        $sql = "SELECT id, name, image, biography, xp, pv, mana, strength, initiative,
+                   armor_id, primary_weapon_id, secondary_weapon_id, level, user_id, hero_type_id 
+            FROM hero WHERE id = :id";
         $stmt = $db->prepare($sql);
         $stmt->execute([':id' => $id]);
         $result = $stmt->fetch();

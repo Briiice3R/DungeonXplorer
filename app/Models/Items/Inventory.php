@@ -20,11 +20,11 @@ class Inventory
         $db = Database::getInstance();
 
         // First, clear existing inventory for the hero
-        $stmt = $db->prepare("DELETE FROM inventory WHERE hero_id = :hero_id");
+        $stmt = $db->prepare("DELETE FROM Inventory WHERE hero_id = :hero_id");
         $stmt->execute([':hero_id' => $this->hero->getId()]);
 
         // Now, insert current items
-        $stmt = $db->prepare("INSERT INTO inventory (hero_id, item_id, quantity) VALUES (:hero_id, :item_id, :quantity)");
+        $stmt = $db->prepare("INSERT INTO Inventory (hero_id, item_id, quantity) VALUES (:hero_id, :item_id, :quantity)");
         foreach ($this->items as $inventorySlot) {
             $stmt->execute([
                 ':hero_id' => $this->hero->getId(),
@@ -76,7 +76,7 @@ class Inventory
     public function loadInventory(): void{
         $db = Database::getInstance();
 
-        $stmt = $db->prepare("SELECT * FROM inventory WHERE hero_id = :hero_id");
+        $stmt = $db->prepare("SELECT * FROM Inventory WHERE hero_id = :hero_id");
         $stmt->execute([':hero_id' => $this->hero->getId()]);
         $results = $stmt->fetchAll();
         foreach($results as $row){

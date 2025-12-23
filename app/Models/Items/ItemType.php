@@ -22,7 +22,7 @@ class ItemType{
     public function save(){
         $db = Database::getInstance();
         if($this->id === null){
-            $stmt = $db->prepare("INSERT INTO item_type (category) VALUES (:category)");
+            $stmt = $db->prepare("INSERT INTO Item_type (category) VALUES (:category)");
             $this->id = $db->lastInsertId();
             $stmt->execute([
                 ':category' => $this->category

@@ -15,17 +15,25 @@ abstract class Monster
     protected float $dropXp;
     protected MonsterType $monsterType;
 
-    public function __construct($id, $name, $description, $pv, $mana, $initiative, $strength, $dropXp, $monsterType)
+    public function __construct($id)
     {
-        $this->id = $id;
-        $this->name = $name;
-        $this->description = $description;
-        $this->pv = $pv;
-        $this->mana = $mana;
-        $this->initiative = $initiative;
-        $this->strength = $strength;
-        $this->dropXp = $dropXp;
-        $this->monsterType = $monsterType;
+        $data = Database::getInstance();
+        $query = $data->prepare("SELECT * FROM Monster  WHERE id = :id");
+        $query->bindParam(':id', $id);
+        $query->execute();
+        $data = $query->fetch(\PDO::FETCH_ASSOC);
+        if($data){
+            $this->name = $data['name'];
+            $this->description = $data['description'];
+            $this->pv = $data['pv'];
+            $this->mana = $data['mana'];
+            $this->initiative = $data['initiative'];
+            $this->strength = $data['strength'];
+            $this->dropXp = $data['dropXp'];
+            $this->monsterType = $data['monsterType'];
+        }
+
+
     }
 
     public function save(){
@@ -33,7 +41,7 @@ abstract class Monster
         $monsterTypeId = $this->monsterType->getId();
         if($this->id === null){
             // Insert new monster
-            $stmt = $db->prepare("INSERT INTO monster (name, description, pv, mana, initiative, strength, dropXp, monster_type_id) VALUES (:name, :description, :pv, :mana, :initiative, :strength, :dropXp, :monsterTypeId)");
+            $stmt = $db->prepare("INSERT INTO Monster (name, description, pv, mana, initiative, strength, dropXp, monster_type_id) VALUES (:name, :description, :pv, :mana, :initiative, :strength, :dropXp, :monsterTypeId)");
             $stmt->execute([
                 ':name' => $this->name,
                 ':description' => $this->description,
@@ -47,7 +55,7 @@ abstract class Monster
             $this->id = $db->lastInsertId();
         } else {
             // Update existing monster
-            $stmt = $db->prepare("UPDATE monster SET name = :name, description = :description, pv = :pv, mana = :mana, initiative = :initiative, strength = :strength, dropXp = :dropXp, monster_type_id = :monsterTypeId WHERE id = :id");
+            $stmt = $db->prepare("UPDATE Monster SET name = :name, description = :description, pv = :pv, mana = :mana, initiative = :initiative, strength = :strength, dropXp = :dropXp, monster_type_id = :monsterTypeId WHERE id = :id");
             $stmt->execute([
                 ':name' => $this->name,
                 ':description' => $this->description,
@@ -64,7 +72,7 @@ abstract class Monster
 
     public static function find($id){
         $db = Database::getInstance();
-        $stmt = $db->prepare("SELECT * FROM monster WHERE id = :id");
+        $stmt = $db->prepare("SELECT * FROM Monster WHERE id = :id");
         $stmt->execute([':id' => $id]);
         $result = $stmt->fetch();
         if(!$result){
