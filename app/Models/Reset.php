@@ -1,6 +1,8 @@
 <?php
 namespace app\Models;
 use App\Core\Database;
+use PHPMailer\PHPMailer\PHPMailer;
+require 'vendor/autoload.php';
 
 
 class Reset{
@@ -30,12 +32,24 @@ class Reset{
             $req_register->bindParam(':expires', $expires);
             $req_register->execute();
         }
-        $to = $email;
-        $subject = "Réinitialisation de votre mot de passe";
-        $message = "Bonjour,\n\nVoici votre code de réinitialisation : $code\nIl expire dans 15 minutes.";
-        $headers = "From: no-reply@tonsite.com\r\n";
-        $headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
 
+        $mail = new PHPMailer(true);
+        $mail->isSMTP();
+        $mail->Host = 'smtp.gmail.com';
+        $mail->SMTPAuth = true;
+        $mail->Username = getenv('SMTP_USER');
+        $mail->Password = getenv('SMTP_PASS');
+        $mail->SMTPSecure = 'tls';
+        $mail->Port = 587;
+        $mail->SMTPDebug = 2;
+
+
+        $mail->setFrom('dungeonxplorer866@gmail.com', 'Test');
+        $mail->addAddress('dungeonxplorer866@gmail.com');
+        $mail->Subject = 'Test SMTP';
+        $mail->Body = 'Ça marche';
+
+        $mail->send();
 
         return 0;  
     }
