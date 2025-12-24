@@ -1,6 +1,8 @@
 <?php
 namespace App\Models\Heroes;
 use App\Models\Spell;
+use App\Models\User;
+use App\Models\Level;
 
 class Magicien extends Hero{
 
@@ -16,13 +18,14 @@ class Magicien extends Hero{
         $mana,
         $strength,
         $initiative,
-        $armor,
-        $primaryWeapon,
-        $secondaryWeapon,
-        $level,
-        $user,
-        $heroType,
-        $spells
+        User $user,
+        ?Inventory $inventory,
+        HeroType $heroType,
+        Level $level,
+        ?Armor $armor,
+        ?Weapon $primaryWeapon,
+        ?Weapon $secondaryWeapon,
+        $spells = []
     )
     {
         parent::__construct(
