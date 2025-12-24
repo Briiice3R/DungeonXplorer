@@ -23,7 +23,16 @@ $router->post('/update/{id}', "ProfileController@update");
 $router->get('/delete/{id}', "ProfileController@delete");
 $router->get('/start-adventure', "HomeController@index");
 
+$router->get('/api/fight/{heroId}/{monsterId}', [FightController::class, 'getFightData']);
 
+// Récupérer uniquement les données du héros
+$router->get('/api/hero/{heroId}', [FightController::class, 'getHeroJson']);
+
+// Récupérer uniquement les données du monstre
+$router->get('/api/monster/{monsterId}', [FightController::class, 'getMonsterJson']);
+
+// Sauvegarder les résultats du combat
+$router->post('/api/fight/save', [FightController::class, 'saveFightResult']);
 
 $router->get('/chapter/{id}', "ChapterController@show");
 // Run it!
