@@ -23,9 +23,16 @@ $router->post('/signup', "SignUpController@register");
 $router->get('/login', "LoginController@index");
 $router->post('/login', "LoginController@login");
 $router->get('/logout', "LogoutController@logout");
-// $router->get('/forgotPassword', "ResetController@index1");
-// $router->post('/forgotPassword', "ResetController@reset");
-// $router->get('/checkResetPassword', "ResetController@index2");
+$router->get('/forgotPassword', "ResetController@index1");
+$router->post('/forgotPassword', "ResetController@reset");
+$router->get('/checkResetPassword', "ResetController@index2");
+
+// --- Routes Authentification Admin ---
+$router->get('/admin/dashboard', 'AdminController@index');
+$router->get('/admin/delete/{type}/{id}', 'AdminController@deleteContent');
+$router->get('/admin/forge/data/{type}/{id}', 'AdminController@getForgeData');
+$router->post('/admin/forge/update/{type}/{id}', 'AdminController@updateContent');
+$router->post('/admin/forge/add/{type}', 'AdminController@addContent');
 
 // --- Routes Aventure (Nécessitent une connexion) ---
 $router->get('/aventureaccueil', "AventureController@index");
@@ -40,6 +47,7 @@ $router->get('/chapter/reprendre/{heroId}/{chapterId}', 'ChapterController@resum
 
 // --- Routes Jeu ---
 $router->get('/chapter/{id}', "ChapterController@show");
+$router->get('/fight/{id}', "FightController@show");
 
 // --- Routes Jeu ---
 $router->get('/profile/{id}',"ProfileController@index");

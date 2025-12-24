@@ -11,6 +11,7 @@
         protected $password;
         protected $created_at;
         protected $gender;
+        protected $admin;
         
         
         // Crée un profile à partir de l'id et des autres données d'un compte lié à cet id dans la base de données
@@ -23,6 +24,7 @@
                 $this->password = $data['password'];
                 $this->created_at = $data['created_at'];
                 $this->gender = $data['gender'];
+                $this->admin = (int)$data['admin'];
             } else {
                 $this->id = null; // Important pour la méthode find()
             }
@@ -146,8 +148,15 @@
         $query = $data->prepare(" DELETE FROM User WHERE id= :id");
         $query->bindParam(':id', $id);
         $query->execute();
-        session_destroy();
-        session_unset();
+        if (isset($_SESSION['userId']) && $_SESSION['userId'] == $id) {
+            session_destroy();
+            session_unset();
+        }
+    }
+
+    public function isAdmin() {
+        // Vérifie si la colonne admin est égale à "1"
+        return $this->admin === 1;
     }
 }
 

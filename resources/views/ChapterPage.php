@@ -22,7 +22,7 @@
             
             <div class="w-full lg:w-1/2">
                 <div class="rounded-lg overflow-hidden border-2 border-[#C4975E]/30 shadow-[0_0_20px_rgba(196,151,94,0.15)]">
-                    <img src="<?= $chapter->getImage(); ?>" 
+                    <img src="/DungeonXplorer/<?= ltrim($chapter->getImage()); ?>" 
                          alt="Illustration" 
                          class="w-full h-auto object-cover opacity-90 hover:opacity-100 transition-opacity">
                 </div>

@@ -10,6 +10,7 @@ use App\Models\Heroes\Voleur;
 use App\Models\Level;
 use App\Models\User;
 use App\Core\Database;
+use App\Models\Spell;
 
 class HeroController {
 
@@ -74,6 +75,8 @@ class HeroController {
                 $hero = new Guerrier(...$heroData);
                 break;
             case 'MAGICIEN':
+                $defaultSpells = Spell::find(5);            
+                $heroData[] = $defaultSpells ? [$defaultSpells] : [];
                 $hero = new Magicien(...$heroData);
                 break;
             case 'VOLEUR':
@@ -92,6 +95,16 @@ class HeroController {
             
             // On récupère l'ID réel du héros et on l'a stock dans la session
             $currentHeroId = $hero->getId();
+
+            if ($typeName === 'MAGICIEN') {
+                $db = Database::getInstance();
+                $stmt = $db->prepare("INSERT INTO Spell_Hero (hero_id, spell_id, learned_at) VALUES (:h, :s, NOW())");
+                $stmt->execute([
+                    ':h' => $currentHeroId,
+                    ':s' => 5
+                ]);
+            }
+
             $_SESSION['active_hero_id'] = $currentHeroId;
 
             // --- AJOUT : INITIALISATION DE LA TABLE PROGRESSION ---
