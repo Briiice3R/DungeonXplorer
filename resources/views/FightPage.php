@@ -17,8 +17,13 @@
             <?php include_once ("Navbar/Navbar.php"); ?>
         </header>
 
-        <main class="flex flex-col md:flex-row justify-center items-center gap-8 p-8">
-           
+        <main>
+            <div class="flex justify-center ">
+                <div class="bg-[#2E2E2E] p-6 rounded-lg w-full max-w-xs text-center shadow-lg mt-6">
+                    <p id="affichage_log"></p>
+                </div>
+            </div>
+            <div class="flex flex-col md:flex-row justify-center items-center gap-8 p-8">
             <div class="bg-[#2E2E2E] p-6 rounded-lg w-full max-w-xs text-center shadow-lg">
                 <h2 class="text-xl font-semibold mb-4 text-[#C4975E]">Héros</h2>
                 <div class="flex justify-center text-center">
@@ -61,6 +66,7 @@
                     <p>Pv : </p>
                     <p id="pv_monstre" class="text-lg mb-2">000</p>
                 </div>
+            </div>
             </div>
         </main>
 

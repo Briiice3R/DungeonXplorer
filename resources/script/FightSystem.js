@@ -1,7 +1,5 @@
 
     let affichagePvHeros = document.getElementById('pv_heros');
-    
-    
     let affichagePvMonstre = document.getElementById('pv_monstre');
     let affichageManaHeros = document.getElementById('mana_heros');
     let boutonSortEmpoisonnement = document.getElementById('sort_empoisonnement');
@@ -14,6 +12,7 @@
     let boutonAttaque = document.getElementById('attaque');
     let nomMonstre = document.getElementById('nom_monstre');
     let affichageForce = document.getElementById('force_heros');
+    let affichageLog = document.getElementById('affichage_log');
 
     /**** caractéristique héros ****/
 
@@ -76,7 +75,7 @@
 
  //Lance une attaque simple sur le monstre
     function attaqueSimple(){
-        if(nbPvMonstre > 0){
+        if(nbPvMonstre > 0 && nbPvHeros >0){
         pvRestant = nbPvMonstre - forceHeros;
         if(pvRestant < 0){
             pvRestant = 0;
@@ -90,7 +89,7 @@
 
     function lancerSortEmpoisonnement(){
         nbManaHeros = nbManaHeros - coutManaSort;
-        if(nbManaHeros >=0 && nbPvMonstre >0){
+        if(nbManaHeros >=0 && nbPvMonstre >0 && nbPvHeros >0){
             nbPvMonstre = nbPvMonstre - dommageSort;
             if(nbPvMonstre <0){
                 pvRestant =0;
@@ -99,7 +98,8 @@
             affichageManaHeros.textContent = nbManaHeros;
         }
         else{
-            alert("Vous n'avez plus assez de mana pour jeter un sort");
+            nbManaHeros =0;
+            affichageLog.textContent = "Vous n'avez plus assez de mana pour jeter un sort";
         }
     }
 
@@ -107,68 +107,98 @@
 
     function lancerSortSoin(){
         nbManaHeros = nbManaHeros - coutManaSort;
-        if(nbManaHeros >=0){
-            nbPvHeros = nbPvHeros + soinPotion;
+        if(nbManaHeros >=0 && nbPvHeros >0){
+            nbPvHeros = nbPvHeros + soinSort;
             affichagePvHeros.textContent = nbPvHeros;
             affichageManaHeros.textContent = nbManaHeros;
         }
         else{
-            alert("Vous n'avez plus assez de mana pour jeter un sort");
+            nbManaHeros =0;
+            affichageLog.textContent = "Vous n'avez plus assez de mana pour jeter un sort";
+        }
+    }
+
+    //Lance un sort qui augmente la force
+
+    function lancerSortForce(){
+        nbManaHeros = nbManaHeros - coutManaSort;
+        if(nbManaHeros >=0 && nbPvHeros >0){
+            forceHeros = forceHeros + forceSort;
+            affichageForce.textContent = forceHeros;
+            affichageManaHeros.textContent = nbManaHeros;
+        }
+        else{
+            nbManaHeros =0;
+            affichageLog.textContent = "Vous n'avez plus assez de mana pour jeter un sort";
+        }
+    }
+
+    //Lance un sort qui redonne du mana
+
+    function lancerSortMana(){
+        nbManaHeros = nbManaHeros - coutManaSort;
+        if(nbManaHeros >=0 && nbPvHeros >0){
+            nbManaHeros = nbManaHeros + manaSort;
+            affichageManaHeros.textContent = nbManaHeros;
+        }
+        else{
+            nbManaHeros =0;
+            affichageLog.textContent = "Vous n'avez plus assez de mana pour jeter un sort";
         }
     }
 
     /*Lance une potion de soin*/
 
     function lancerPotionSoin(){
-        if(nbPotionSoin > 0){
+        if(nbPotionSoin > 0 && nbPvHeros >0){
             nbPotionSoin = nbPotionSoin -1;
             nbPvHeros = nbPvHeros + soinPotion;
             boutonPotionSoin.textContent = nbPotionSoin + " : Potion de soin : " +  soinPotion + "pv";
             affichagePvHeros.textContent = nbPvHeros;
         }
         else{
-            alert("Vous n'avez plus de potion de soin");
+            affichageLog.textContent = "Vous n'avez plus de potion de soin";
         } 
     }
 
     /*Lance une potion de force*/
 
     function lancerPotionForce(){
-        if(nbPotionForce > 0){
+        if(nbPotionForce > 0 && nbPvHeros >0){
             nbPotionForce = nbPotionForce -1;
             forceHeros = forceHeros + forcePotion;
             affichageForce.textContent = forceHeros;
             boutonPotionForce.textContent = nbPotionForce + " : Potion de force : " +  forcePotion;
         }
         else{
-            alert("Vous n'avez plus de potion de force");
+            affichageLog.textContent = "Vous n'avez plus de potion de force";
+            
         } 
     }
 
     /*Lance une potion de mana*/
     function lancerPotionMana(){
-        if(nbPotionMana > 0){
+        if(nbPotionMana > 0 && nbPvHeros >0){
             nbPotionMana = nbPotionMana -1;
             nbManaHeros = nbManaHeros + manaPotion;
             affichageManaHeros.textContent = nbManaHeros;
             boutonPotionMana.textContent = nbPotionMana + " : Potion de mana : " +  manaPotion;
         }
         else{
-            alert("Vous n'avez plus de potion de mana");
+            affichageLog.textContent = "Vous n'avez plus de potion de mana";
         } 
     }
 
     /* retourne vrai si le héros gagne */
-    function gagner(){
+    function estgagnee(){
         if(nbPvHeros > 0 && nbPvMonstre == 0){
-            alert("félicitation vous avez gagnez le combat");
             return true;
         }
         return false;
     }
 
     /*retourne vrai si le héros perd*/
-    function perdre(){
+    function estperdu(){
         if(nbPvHeros == 0){
             return true;
         }
@@ -189,23 +219,37 @@
     boutonPotionMana.textContent = nbPotionMana + " : Potion de mana : " +  manaPotion;
     nomMonstre.textContent = "Le loup noir";
 
-    boutonAttaque.addEventListener('click', ()=>{
-        attaqueSimple();
-    });
+    
+        boutonAttaque.addEventListener('click', ()=>{
+            attaqueSimple();
+        });
 
-    boutonSortEmpoisonnement.addEventListener('click', ()=>{
+        boutonSortEmpoisonnement.addEventListener('click', ()=>{
         
-        lancerSortEmpoisonnement();
-    })
+            lancerSortEmpoisonnement();
+        })
 
-    boutonPotionSoin.addEventListener('click', ()=>{
-        lancerPotionSoin();
-    })
+        boutonSortForce.addEventListener('click', ()=>{
+            lancerSortForce();
+        })
 
-    boutonPotionMana.addEventListener('click', ()=>{
-        lancerPotionMana();
-    })
-    boutonPotionForce.addEventListener('click', ()=>{
-        lancerPotionForce();
-    })
+        boutonSortMana.addEventListener('click', ()=>{
+            lancerSortMana();
+        })
+
+        boutonSortSoin.addEventListener('click', ()=>{
+            lancerSortSoin();
+        })
+
+        boutonPotionSoin.addEventListener('click', ()=>{
+            lancerPotionSoin();
+        })
+
+        boutonPotionMana.addEventListener('click', ()=>{
+            lancerPotionMana();
+        })
+        boutonPotionForce.addEventListener('click', ()=>{
+            lancerPotionForce();
+        })
         
+
