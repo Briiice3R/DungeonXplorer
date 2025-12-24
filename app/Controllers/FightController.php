@@ -17,7 +17,7 @@ class FightController
 {
     public function show($idChapitre)
     {
-        $hero = Hero::find(3); 
+       /* $hero = Hero::find(3); 
         $monster = Monster::find(1); 
 
         if ($hero === null || $monster === null) {
@@ -26,7 +26,7 @@ class FightController
 
         // Préparer les données pour JavaScript
         $heroData = $this->prepareHeroData($hero);
-        $monsterData = $this->prepareMonsterData($monster);
+        $monsterData = $this->prepareMonsterData($monster);*/
 
         include __DIR__ . "/../../resources/views/FightPage.php";
     }

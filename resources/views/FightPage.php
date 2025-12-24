@@ -28,7 +28,11 @@
                 <div class="flex justify-center text-center">
                 <p>Mana : </p>
                     <p id="mana_heros" class="text-lg mb-4">000</p>
-                
+                </div>
+                <div class="flex justify-center text-center">
+                    <p>Force : </p>
+                    <p id="force_heros">000</p>
+                </div>
 
                 <h3 class="font-medium text-lg text-[#C4975E] mb-2">Choix de l'attaque</h3>
                 <button id="attaque" class="bg-[#C4975E] hover:bg-[#8B1E1E] rounded-md py-2 px-4 mb-2">Lancer une attaque</button>
@@ -37,15 +41,15 @@
                 <div class="flex flex-col gap-2">
                     <button id="sort_empoisonnement" class="bg-[#C4975E] hover:bg-[#8B1E1E] rounded-md py-2 px-4">Sort d'empoisonnement : -30 pv pour l'ennemi</button>
                     <button id="sort_soin" class="bg-[#C4975E] hover:bg-[#8B1E1E] rounded-md py-2 px-4">Sort de soin : 20 pv</button>
-                    <button id="sort_attaque" class="bg-[#C4975E] hover:bg-[#8B1E1E] rounded-md py-2 px-4">Sort d'attaque : 20</button>
+                    <button id="sort_force" class="bg-[#C4975E] hover:bg-[#8B1E1E] rounded-md py-2 px-4">Sort d'attaque : 20</button>
                     <button id="sort_mana" class="bg-[#C4975E] hover:bg-[#8B1E1E] rounded-md py-2 px-4">Sort de mana : 20</button>
                 </div>
 
                 <h3 class="font-medium text-lg text-[#C4975E] mb-2">Choix de la potion</h3>
                 <div class="flex flex-col gap-2">
-                    <button id="potion_soin" class="bg-[#C4975E] hover:bg-[#8B1E1E] rounded-md py-2 px-4">Potion de soin : 50 pv</button>
-                    <button id="potion_attaque" class="bg-[#C4975E] hover:bg-[#8B1E1E] rounded-md py-2 px-4">Potion de force : 40</button>
-                    <button id="potion_mana" class="bg-[#C4975E] hover:bg-[#8B1E1E] rounded-md py-2 px-4">Potion de mana : 30</button>
+                    <button id="potion_soin" class="bg-[#C4975E] hover:bg-[#8B1E1E] rounded-md py-2 px-4"></button>
+                    <button id="potion_force" class="bg-[#C4975E] hover:bg-[#8B1E1E] rounded-md py-2 px-4"></button>
+                    <button id="potion_mana" class="bg-[#C4975E] hover:bg-[#8B1E1E] rounded-md py-2 px-4"></button>
                 </div>
             </div>
 
@@ -69,6 +73,6 @@
     </body>
 </html>
 <script>
-     const heroData = <?= json_encode($heroData) ?>;
-     const monsterData = <?= json_encode($monsterData) ?>;
+     /*const heroData = <php?= json_encode($heroData) ?>;
+     const monsterData = <php?= json_encode($monsterData) ?>; */
  </script>
