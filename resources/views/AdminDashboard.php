@@ -147,7 +147,7 @@
                                                 
                                                 <?php if ($type === 'treasures'): ?>
                                                     <div class="text-[15px] text-[#C4975E] uppercase italic">
-                                                        Chapitre <?= $item['subtitle'] ?> • Qté: <?= $item['quantity'] ?>
+                                                    Chapitre <?= htmlspecialchars($item['chapter_num']) ?> • Items : <?= htmlspecialchars($item['title']) ?> • Qté: <?= htmlspecialchars($item['quantity']) ?>
                                                     </div>
                                                 <?php else: ?>
                                                     <div class="text-[15px] text-gray-500 uppercase italic">
@@ -178,6 +178,37 @@
             </section>
         </div>
 
+        <section class="mt-12 bg-[#2E2E2E] rounded-lg border border-[#C4975E]/20 shadow-2xl overflow-hidden">
+            <div class="p-6 border-b border-[#C4975E]/10 bg-[#1A1A1A]/30 flex justify-between items-center">
+                <h2 class="font-['Pirata_One'] text-3xl text-[#C4975E] flex items-center gap-3">
+                    <i class="fas fa-images"></i> Bibliothèque d'Images
+                </h2>
+                <span class="text-xs text-gray-500 uppercase font-bold"><?= count($images) ?> Fichiers</span>
+            </div>
+            
+            <div class="p-6 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 max-h-[400px] overflow-y-auto custom-scrollbar">
+                <?php foreach ($images as $img): ?>
+                    <div class="group relative aspect-square bg-[#1A1A1A] rounded border border-white/5 overflow-hidden hover:border-[#C4975E]/50 transition-all">
+                        <img src="/DungeonXplorer/resources/images/<?= $img ?>" 
+                            class="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity" 
+                            alt="<?= $img ?>">
+                        
+                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                            <a href="/DungeonXplorer/admin/delete/image/<?= $img ?>" 
+                            onclick="return confirm('Supprimer définitivement ce fichier ? (Assurez-vous qu\'il n\'est plus utilisé)');"
+                            class="bg-red-600 text-white p-2 rounded-full hover:bg-red-700 transition-colors shadow-lg">
+                                <i class="fas fa-trash-alt text-xs"></i>
+                            </a>
+                        </div>
+
+                        <div class="absolute bottom-0 left-0 right-0 bg-black/80 p-1 text-[8px] text-center truncate opacity-0 group-hover:opacity-100 transition-opacity">
+                            <?= $img ?>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        </section>
+
         <div class="mt-12 grid grid-cols-2 md:grid-cols-4 gap-6">
             <div class="bg-[#1A1A1A]/60 border border-[#C4975E]/10 p-4 rounded-lg text-center shadow-lg">
                 <span class="block text-[#C4975E] text-3xl font-['Pirata_One'] tracking-widest"><?= count($users) ?></span>
@@ -193,7 +224,7 @@
             </div>
             <div class="bg-[#1A1A1A]/60 border border-[#C4975E]/10 p-4 rounded-lg text-center shadow-lg">
                 <span class="block text-[#C4975E] text-3xl font-['Pirata_One'] tracking-widest"><?= $stats['heroes'] ?? '?' ?></span>
-                <span class="text-[15px] uppercase text-gray-500 font-bold tracking-tighter">Total Aventures en cours</span>
+                <span class="text-[15px] uppercase text-gray-500 font-bold tracking-tighter">Total Aventures</span>
             </div>
         </div>
     </main>
@@ -206,7 +237,7 @@
                 <button onclick="closeModal()" class="text-gray-400 hover:text-white text-2xl">&times;</button>
             </div>
 
-            <form id="editForm" action="" method="POST" class="p-8 space-y-6 max-h-[70vh] overflow-y-auto custom-scrollbar">
+            <form id="editForm" action="" method="POST" enctype="multipart/form-data" class="p-8 space-y-6 max-h-[70vh] overflow-y-auto custom-scrollbar">
                 <div id="modalInputs">
                     <p class="text-center italic text-gray-500">Chargement des données...</p>
                 </div>
@@ -230,11 +261,31 @@
     </footer>
 
     <script>
-        // Génère dynamiquement les champs du formulaire selon le type d'entité
-        function renderForgeInputs(type, data = {}) {
+        // Gère la prévisualisation de l'image sélectionnée sur l'ordi
+        function initImageLogic() {
+            const imageInput = document.getElementById('imageInput');
+            const previewImage = document.getElementById('previewImage');
+
+            if (imageInput && previewImage) {
+                imageInput.addEventListener('change', function() {
+                    const file = this.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = (e) => { previewImage.src = e.target.result; };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
+        }
+
+        // Injection des données PHP dans le JavaScript
+        const monsterList = <?= json_encode($allMonsters ?? []) ?>;
+        const itemList    = <?= json_encode($allItems ?? []) ?>;
+        const chapterList = <?= json_encode($allChapters ?? []) ?>;
+
+        function renderForgeInputs(type, data = {}, showImage = true) {
             let html = `<div class="space-y-4">`;
 
-            // Configuration pour les MONSTRES
             if (type === 'monsters') {
                 html += `
                     <div>
@@ -246,85 +297,140 @@
                         <div><label class="block text-[#C4975E] text-[10px] font-bold uppercase mb-1">Mana</label><input type="number" step="0.1" name="mana" value="${data.mana || 0}" class="w-full bg-[#1A1A1A] border border-[#C4975E]/30 p-2 rounded text-white"></div>
                         <div><label class="block text-[#C4975E] text-[10px] font-bold uppercase mb-1">Force</label><input type="number" step="0.1" name="strength" value="${data.strength || 0}" class="w-full bg-[#1A1A1A] border border-[#C4975E]/30 p-2 rounded text-white"></div>
                         <div><label class="block text-[#C4975E] text-[10px] font-bold uppercase mb-1">XP Drop</label><input type="number" step="0.1" name="drop_xp" value="${data.drop_xp || 0}" class="w-full bg-[#1A1A1A] border border-[#C4975E]/30 p-2 rounded text-white"></div>
-                    </div>
-                `;
+                    </div>`;
             } 
-            // --- Configuration pour les CHAPITRES
             else if (type === 'chapters') {
+                const imgPath = data.image ? `/DungeonXplorer/${data.image}` : '/DungeonXplorer/resources/images/default_chapter.webp';
+                const title = data.title || data.name || '';
+                const description = data.description || '';
+                
                 html += `
-                    <div>
-                        <label class="block text-[#C4975E] text-xs font-bold uppercase mb-2">Titre du Chapitre</label>
-                        <input type="text" name="display_name" value="${data.title || ''}" required class="w-full bg-[#1A1A1A] border border-[#C4975E]/30 p-3 rounded text-white focus:border-[#C4975E] outline-none">
+                    <div class="space-y-4 bg-[#1A1A1A]/50 p-4 rounded border border-[#C4975E]/10">
+                        <h3 class="text-[#C4975E] font-['Pirata_One'] text-xl underline italic">Identité du Chapitre</h3>
+                        
+                        <input type="text" name="display_name" value="${data.title || data.name || ''}" placeholder="Titre du Chapitre" required 
+                            class="w-full bg-[#1A1A1A] border border-[#C4975E]/30 p-3 rounded text-white focus:border-[#C4975E] outline-none">
+                        
+                        <textarea name="description" placeholder="Récit de l'aventure..." rows="4" 
+                            class="w-full bg-[#1A1A1A] border border-[#C4975E]/30 p-3 rounded text-white focus:border-[#C4975E] outline-none">${data.description || ''}</textarea>
+                        
+                        <input type="file" name="image" id="imageInput" class="hidden" accept="image/*">
+                        <label for="imageInput" class="cursor-pointer border border-dashed border-[#C4975E]/30 p-4 text-center block hover:bg-[#C4975E]/10 transition-colors">
+                            <img src="${imgPath}" id="previewImage" class="h-24 mx-auto mb-2 object-cover rounded">
+                            <span class="text-[10px] uppercase text-gray-500">Cliquer pour uploader une illustration</span>
+                        </label>
                     </div>
-                    <div>
-                        <label class="block text-[#C4975E] text-xs font-bold uppercase mb-2">Image (Chemin)</label>
-                        <input type="text" name="image" value="${data.image || ''}" placeholder="resources/images/nom.jpg" class="w-full bg-[#1A1A1A] border border-[#C4975E]/30 p-3 rounded text-white focus:border-[#C4975E] outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-[#C4975E] text-xs font-bold uppercase mb-2">Récit du Chapitre</label>
-                        <textarea name="description" rows="6" class="w-full bg-[#1A1A1A] border border-[#C4975E]/30 p-3 rounded text-white focus:border-[#C4975E] outline-none">${data.description || ''}</textarea>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="p-4 bg-red-900/10 border border-red-900/20 rounded">
+                            <label class="block text-red-500 text-[10px] font-bold uppercase mb-2">Monstre Présent</label>
+                            <select name="monster_id" class="w-full bg-[#1A1A1A] border border-red-900/30 p-2 rounded text-white text-sm focus:border-red-500 outline-none">
+                                <option value="">Aucun monstre</option>
+                                ${monsterList.map(m => `<option value="${m.id}" ${data.monster_id == m.id ? 'selected' : ''}>${m.name}</option>`).join('')}
+                            </select>
+                        </div>
+
+                        <div class="p-4 bg-yellow-900/10 border border-yellow-900/20 rounded">
+                            <label class="block text-yellow-500 text-[10px] font-bold uppercase mb-2">Objet à ramasser</label>
+                            <select name="item_id_simple" class="w-full bg-[#1A1A1A] border border-yellow-900/30 p-2 rounded text-white text-sm focus:border-yellow-500 outline-none">
+                                <option value="">Aucun objet</option>
+                                ${itemList.map(i => `<option value="${i.id}" ${data.item_id_simple == i.id ? 'selected' : ''}>${i.name}</option>`).join('')}
+                            </select>
+                        </div>
+
+                        <div class="p-4 bg-blue-900/10 border border-blue-900/20 rounded">
+                            <label class="block text-blue-500 text-[10px] font-bold uppercase mb-2">Butin Quantifiable</label>
+                            <div class="flex gap-2">
+                                <select name="treasure_item_id" class="flex-1 bg-[#1A1A1A] border border-blue-900/30 p-2 rounded text-white text-sm focus:border-blue-500 outline-none">
+                                    <option value="">Objet...</option>
+                                    ${itemList.map(i => `<option value="${i.id}" ${data.treasure_item_id == i.id ? 'selected' : ''}>${i.name}</option>`).join('')}
+                                </select>
+                                <input type="number" name="treasure_qty" value="${data.treasure_qty || ''}" placeholder="Qté" class="w-16 bg-[#1A1A1A] border border-blue-900/30 p-2 rounded text-white text-sm">
+                            </div>
+                        </div>
+
+                        <div class="p-4 bg-green-900/10 border border-green-900/20 rounded">
+                            <label class="block text-green-500 text-[10px] font-bold uppercase mb-2">Suite de l'Aventure</label>
+                            <div class="flex flex-col gap-2">
+                                <input type="text" name="choice_text" value="${data.choice_text || ''}" placeholder="Texte du bouton (ex: Ouvrir la porte)" class="w-full bg-[#1A1A1A] border border-green-900/30 p-2 rounded text-white text-sm focus:border-green-500 outline-none">
+                                <select name="to_chapter_id" class="w-full bg-[#1A1A1A] border border-green-900/30 p-2 rounded text-white text-sm focus:border-green-500 outline-none">
+                                    <option value="">Vers quel chapitre ?</option>
+                                    ${chapterList.map(c => `<option value="${c.id}" ${data.to_chapter_id == c.id ? 'selected' : ''}>Chapitre ${c.id} : ${c.title}</option>`).join('')}
+                                </select>
+                            </div>
+                        </div>
                     </div>
                 `;
             } 
-            // Configuration pour les TRESORS
             else if (type === 'treasures') {
                 html += `
-                    <div>
-                        <label class="block text-[#C4975E] text-xs font-bold uppercase mb-2">ID du Chapitre lié</label>
-                        <input type="number" name="display_chapter" value="${data.chapter_id || ''}" required class="w-full bg-[#1A1A1A] border border-[#C4975E]/30 p-3 rounded text-white focus:border-[#C4975E] outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-[#C4975E] text-xs font-bold uppercase mb-2">ID de l'Objet</label>
-                        <input type="number" name="item_id" required class="w-full bg-[#1A1A1A] border border-[#C4975E]/30 p-3 rounded text-white">
-                    </div>
-                    <div>
-                        <label class="block text-[#C4975E] text-xs font-bold uppercase mb-2">Quantité</label>
-                        <input type="number" name="quantite" value="${data.quantity || 1}" required class="w-full bg-[#1A1A1A] border border-[#C4975E]/30 p-3 rounded text-white focus:border-[#C4975E] outline-none">
-                    </div>
-                `;
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-[#C4975E] text-xs font-bold uppercase mb-2">Chapitre lié</label>
+                            <select name="display_chapter" required class="w-full bg-[#1A1A1A] border border-[#C4975E]/30 p-3 rounded text-white focus:border-[#C4975E] outline-none">
+                                <option value="">-- Sélectionner un chapitre --</option>
+                                ${chapterList.map(c => `
+                                    <option value="${c.id}" ${data.chapter_id == c.id ? 'selected' : ''}>
+                                        Chapitre ${c.id} : ${c.title}
+                                    </option>
+                                `).join('')}
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-[#C4975E] text-xs font-bold uppercase mb-2">Objet du trésor</label>
+                            <select name="item_id" required class="w-full bg-[#1A1A1A] border border-[#C4975E]/30 p-3 rounded text-white focus:border-[#C4975E] outline-none">
+                                <option value="">-- Sélectionner un objet --</option>
+                                ${itemList.map(i => `
+                                    <option value="${i.id}" ${data.item_id == i.id ? 'selected' : ''}>
+                                        ${i.name}
+                                    </option>
+                                `).join('')}
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-[#C4975E] text-xs font-bold uppercase mb-2">Quantité</label>
+                            <input type="number" name="quantite" value="${data.quantity || 1}" min="1" required 
+                                class="w-full bg-[#1A1A1A] border border-[#C4975E]/30 p-3 rounded text-white outline-none focus:border-[#C4975E]">
+                        </div>
+                    </div>`;
             }
 
             html += `</div>`;
             return html;
         }
 
-        // Ouvre le modèle en mode MODIFICATION
         async function openEditModal(type, id) {
             const modal = document.getElementById('editModal');
             const inputsContainer = document.getElementById('modalInputs');
             modal.classList.remove('hidden');
-            inputsContainer.innerHTML = '<p class="text-center italic text-gray-500">Lecture du grimoire...</p>';
+            inputsContainer.innerHTML = '<p class="text-center italic text-gray-500">Chargement...</p>';
 
             try {
                 const response = await fetch(`/DungeonXplorer/admin/forge/data/${type}/${id}`);
                 const data = await response.json();
-
                 document.getElementById('editForm').action = `/DungeonXplorer/admin/forge/update/${type}/${id}`;
                 document.getElementById('modalTitle').innerText = `Modifier : ${data.title || data.name}`;
-                inputsContainer.innerHTML = renderForgeInputs(type, data);
+                inputsContainer.innerHTML = renderForgeInputs(type, data, true);
+                initImageLogic(); // Active la prévisualisation
             } catch (error) {
-                inputsContainer.innerHTML = '<p class="text-red-500">Erreur lors de la lecture du grimoire.</p>';
+                inputsContainer.innerHTML = '<p class="text-red-500">Erreur de lecture.</p>';
             }
         }
 
-        // Ouvre le modèle en mode AJOUT
         function openAddModal(type) {
             const modal = document.getElementById('editModal');
             const inputsContainer = document.getElementById('modalInputs');
             modal.classList.remove('hidden');
-
-            // On change l'action vers 'store' au lieu de 'update'
             document.getElementById('editForm').action = `/DungeonXplorer/admin/forge/add/${type}`;
             document.getElementById('modalTitle').innerText = `Ajouter un nouveau ${type.slice(0, -1)}`;
-            
-            // On appelle render sans data pour avoir des champs vides
-            inputsContainer.innerHTML = renderForgeInputs(type);
+            inputsContainer.innerHTML = renderForgeInputs(type, {}, true);
+            initImageLogic(); // Active la prévisualisation
         }
 
-        function closeModal() {
-            document.getElementById('editModal').classList.add('hidden');
-        }
-        </script>
+        function closeModal() { document.getElementById('editModal').classList.add('hidden'); }
+    </script>
 
 </body>
 </html>

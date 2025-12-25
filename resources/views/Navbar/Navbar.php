@@ -31,7 +31,7 @@ if (isset($_SESSION['userId'])) {
             </a>
             
             <a href="/DungeonXplorer/aventureaccueil" class="inline-flex items-center text-[#C4975E] font-['Pirata_One'] text-2xl no-underline hover:text-white transition-all hover:scale-110 tracking-widest uppercase">
-                <i class="fas fa-khanda text-lg mr-3"></i>Aventure
+                <i class="fas fa-compass text-lg mr-3"></i>Aventure
             </a>
 
             <?php if ($isAdmin): ?>

@@ -97,7 +97,7 @@ class HeroController {
             $currentHeroId = $hero->getId();
 
             if ($typeName === 'MAGICIEN') {
-                $db = Database::getInstance();
+                $db = \App\Core\Database::getInstance();
                 $stmt = $db->prepare("INSERT INTO Spell_Hero (hero_id, spell_id, learned_at) VALUES (:h, :s, NOW())");
                 $stmt->execute([
                     ':h' => $currentHeroId,
@@ -109,7 +109,7 @@ class HeroController {
 
             // --- AJOUT : INITIALISATION DE LA TABLE PROGRESSION ---
             // On crée la première ligne au chapitre 1 pour que le héros apparaisse dans l'accueil
-            $db = Database::getInstance();
+            $db = \App\Core\Database::getInstance();
             $stmt = $db->prepare("INSERT INTO Progression (hero_id, chapter_id, start_date) VALUES (:h, 1, NOW())");
             $stmt->execute([':h' => $currentHeroId]);
             // ------------------------------------------------------
@@ -119,4 +119,33 @@ class HeroController {
             exit();
         }
     }
+
+    public function deleteAdventure($id) {
+        @session_start();
+        if (!isset($_SESSION['userId']) || empty($_SESSION['userId'])) {
+            header("Location: ./login"); 
+            exit();
+        }
+
+        // Sécurité : Vérifier que le héros appartient bien à l'utilisateur connecté
+        $db = \App\Core\Database::getInstance();
+        $stmt = $db->prepare("SELECT user_id FROM Hero WHERE id = :id");
+        $stmt->execute([':id' => $id]);
+        $hero = $stmt->fetch();
+    
+        if ($hero && $hero['user_id'] == $_SESSION['userId']) {
+            // Suppression du héros
+            $deleteStmt = $db->prepare("DELETE FROM Hero WHERE id = :id");
+            $deleteStmt->execute([':id' => $id]);
+            
+            // Si le héros supprimé était celui en session, on le retire
+            if (isset($_SESSION['active_hero_id']) && $_SESSION['active_hero_id'] == $id) {
+                unset($_SESSION['active_hero_id']);
+            }
+        }
+    
+        header("Location: /DungeonXplorer/aventureaccueil");
+        exit();
+    }
+
 }

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+    <link rel="icon" href="/DungeonXplorer/favicon.ico" type="image/x-icon">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DungeonXplorer - Vos Aventures</title>
@@ -53,11 +54,17 @@
                                         <span><i class="fas fa-clock mr-2"></i><?= date('d/m/Y H:i', strtotime($adv['start_date'])) ?></span>
                                     </div>
                                 </div>
-
-                                <a href="/DungeonXplorer/chapter/reprendre/<?= $adv['id'] ?>/<?= $adv['chapter_id'] ?>" 
-                                   class="w-full md:w-auto flex items-center justify-center gap-3 bg-[#1A1A1A] border-2 border-[#C4975E] text-[#C4975E] px-8 py-3 rounded-full font-bold uppercase tracking-widest hover:bg-[#C4975E] hover:text-[#1A1A1A] transition-all transform hover:scale-105 shadow-lg">
-                                    <i class="fas fa-play"></i> Continuer
-                                </a>
+                                <div class="flex flex-col md:flex-row gap-2 w-full md:w-auto">
+                                    <a href="/DungeonXplorer/chapter/reprendre/<?= $adv['id'] ?>/<?= $adv['chapter_id'] ?>" 
+                                        class="w-full md:w-auto flex items-center justify-center gap-3 bg-[#1A1A1A] border-2 border-[#C4975E] text-[#C4975E] px-6 py-3 rounded-full font-bold uppercase tracking-widest hover:bg-[#C4975E] hover:text-[#1A1A1A] transition-all transform hover:scale-105 shadow-lg text-sm">
+                                        <i class="fas fa-play"></i> Continuer
+                                    </a>
+                                    <a href="/DungeonXplorer/hero/delete/<?= $adv['id'] ?>"
+                                        onclick="return confirm('Voulez-vous vraiment supprimer cette aventure ? Le héros <?= htmlspecialchars($adv['name']) ?> sera perdu à jamais.');"
+                                        class="w-full md:w-auto flex items-center justify-center gap-3 bg-[#1A1A1A] border-2 border-red-600 text-red-600 px-6 py-3 rounded-full font-bold uppercase tracking-widest hover:bg-red-600 hover:text-white transition-all transform hover:scale-105 shadow-lg text-sm">
+                                        <i class="fas fa-trash-alt"></i></i> Supprimer
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     <?php endforeach; ?>

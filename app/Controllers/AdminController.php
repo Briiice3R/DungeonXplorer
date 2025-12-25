@@ -20,6 +20,10 @@ class AdminController {
 
         $db = \App\Core\Database::getInstance();
         
+        $allMonsters = $db->query("SELECT id, name FROM Monster ORDER BY name")->fetchAll(\PDO::FETCH_ASSOC);
+        $allItems = $db->query("SELECT id, name FROM Item ORDER BY name")->fetchAll(\PDO::FETCH_ASSOC);
+        $allChapters = $db->query("SELECT id, title FROM Chapter ORDER BY id")->fetchAll(\PDO::FETCH_ASSOC);
+
         // Liste des utilisateurs
         $stmt = $db->query("SELECT id, username, email, created_at FROM User WHERE admin != 1 ORDER BY created_at DESC");
         $users = $stmt->fetchAll(\PDO::FETCH_ASSOC);
@@ -29,14 +33,13 @@ class AdminController {
         $forgeItems = [];
 
         if ($type === 'chapters') {
-            // Vérifie si c'est 'Chapter' ou 'chapter' dans ta BDD. D'après l'erreur, tente avec Majuscule :
             $stmt = $db->query("SELECT id, title, image FROM Chapter ORDER BY id ASC");
             $forgeItems = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         } elseif ($type === 'monsters') {
             $stmt = $db->query("SELECT id, name FROM Monster ORDER BY id ASC");
             $forgeItems = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         } elseif ($type === 'treasures') {
-            $stmt = $db->query("SELECT t.item_id as id, i.name as title, t.chapter_id as subtitle, t.quantity FROM Treasure t JOIN Item i ON t.item_id = i.id ORDER BY t.chapter_id ASC");
+            $stmt = $db->query("SELECT t.item_id as id, i.name as title, c.title as subtitle, t.quantity, t.chapter_id as chapter_num FROM Treasure t JOIN Item i ON t.item_id = i.id JOIN Chapter c ON t.chapter_id = c.id ORDER BY t.chapter_id ASC");
             $forgeItems = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         }
 
@@ -46,6 +49,19 @@ class AdminController {
             'monsters' => $db->query("SELECT COUNT(*) FROM Monster")->fetchColumn(),
             'heroes'   => $db->query("SELECT COUNT(*) FROM Hero")->fetchColumn()
         ];
+
+        // Récupération des images du dossier
+        $imageDir = __DIR__ . '/../../resources/images/';
+        $images = [];
+        if (is_dir($imageDir)) {
+            // Scanne le dossier et filtre pour ne garder que les images
+            $files = scandir($imageDir);
+            foreach ($files as $file) {
+                if (in_array(strtolower(pathinfo($file, PATHINFO_EXTENSION)), ['jpg', 'jpeg', 'png', 'webp'])) {
+                    $images[] = $file;
+                }
+            }
+        }
 
         include __DIR__ . '/../../resources/views/AdminDashboard.php';
     }
@@ -121,50 +137,48 @@ class AdminController {
         $stmt->execute([':id' => $id]);
         $data = $stmt->fetch(\PDO::FETCH_ASSOC);
 
+        // Si c'est un chapitre, on ajoute les données liées
+        if ($type === 'chapters' && $data) {
+            // Monstre lié (Table Chapter_Monster)
+            $data['monster_id'] = $db->query("SELECT monster_id FROM Chapter_Monster WHERE chapter_id = $id")->fetchColumn();
+            
+            // Objet simple (Table Chapter_item)
+            $data['item_id_simple'] = $db->query("SELECT item_id FROM Chapter_item WHERE chapter_id = $id")->fetchColumn();
+            
+            // Trésor quantifiable (Table Treasure)
+            $treasure = $db->query("SELECT item_id, quantity FROM Treasure WHERE chapter_id = $id")->fetch(\PDO::FETCH_ASSOC);
+            $data['treasure_item_id'] = $treasure['item_id'] ?? null;
+            $data['treasure_qty'] = $treasure['quantity'] ?? null;
+            
+            // Choix de destination (Table Chapter_Choice)
+            $choice = $db->query("SELECT to_chapter_id, choice_text FROM Chapter_Choice WHERE from_chapter_id = $id")->fetch(\PDO::FETCH_ASSOC);
+            $data['to_chapter_id'] = $choice['to_chapter_id'] ?? null;
+            $data['choice_text'] = $choice['choice_text'] ?? null;
+        }
+
         header('Content-Type: application/json');
         echo json_encode($data);
         exit();
     }
+    
 
-    public function updateContent($type, $id) {
-        @session_start();
-        $admin = \App\Models\User::find($_SESSION['userId'] ?? 0);
-        if (!$admin || !$admin->isAdmin()) {
-            header('HTTP/1.0 403 Forbidden');
-            exit("Accès refusé.");
+    private function uploadImage($file, $id = null) {
+        if (isset($file) && $file['error'] === UPLOAD_ERR_OK) {
+            $uploadDir = __DIR__ . '/../../resources/images/';
+            $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+            $allowedExt = ['jpg', 'jpeg', 'png', 'webp'];
+
+            if (!in_array($extension, $allowedExt)) return null;
+
+            // Nom unique : 'chapter_ID.ext' ou 'chapter_TIMESTAMP.ext' si nouvel ajout
+            $nameTag = $id ? $id : time();
+            $filename = 'chapter' . $nameTag . '.' . $extension;
+            
+            if (move_uploaded_file($file['tmp_name'], $uploadDir . $filename)) {
+                return 'resources/images/' . $filename;
+            }
         }
-    
-        $db = \App\Core\Database::getInstance();
-    
-        if ($type === 'chapters') {
-            $stmt = $db->prepare("UPDATE Chapter SET title = :t, description = :d, image = :i WHERE id = :id");
-            $stmt->execute([
-                ':t'  => $_POST['display_name'],
-                ':d'  => $_POST['description'],
-                ':i'  => $_POST['image'],
-                ':id' => $id
-            ]);
-        } elseif ($type === 'monsters') {
-            $stmt = $db->prepare("UPDATE Monster SET name = :n, pv = :pv, mana = :mana, strength = :s, drop_xp = :xp WHERE id = :id");
-            $stmt->execute([
-                ':n'    => $_POST['display_name'],
-                ':pv'   => $_POST['pv'],
-                ':mana' => $_POST['mana'],
-                ':s'    => $_POST['strength'],
-                ':xp'   => $_POST['drop_xp'],
-                ':id'   => $id
-            ]);
-        } elseif ($type === 'treasures') {
-            $stmt = $db->prepare("UPDATE Treasure SET chapter_id = :c, quantity = :qt WHERE item_id = :id");
-            $stmt->execute([
-                ':c'  => $_POST['display_chapter'],
-                ':qt' => $_POST['quantite'],
-                ':id' => $id
-            ]);
-        }
-    
-        header("Location: /DungeonXplorer/admin/dashboard?type=$type&success=updateok");
-        exit();
+        return null;
     }
 
     public function addContent($type) {
@@ -176,34 +190,125 @@ class AdminController {
         }
         
         $db = \App\Core\Database::getInstance();
-    
+
         if ($type === 'chapters') {
-            $stmt = $db->prepare("INSERT INTO Chapter (title, description, image) VALUES (:t, :d, :i)");
-            $stmt->execute([
-                ':t' => $_POST['display_name'],
-                ':d' => $_POST['description'],
-                ':i' => $_POST['image']
-            ]);
-        } elseif ($type === 'monsters') {
-            $stmt = $db->prepare("INSERT INTO Monster (name, pv, mana, strength, drop_xp) VALUES (:n, :pv, :mana, :s, :xp)");
-            $stmt->execute([
-                ':n'    => $_POST['display_name'],
-                ':pv'   => $_POST['pv'],
-                ':mana' => $_POST['mana'],
-                ':s'    => $_POST['strength'],
-                ':xp'   => $_POST['drop_xp']
-            ]);
-        } elseif ($type === 'treasures') {
-            $stmt = $db->prepare("INSERT INTO Treasure (chapter_id, item_id, quantity) VALUES (:c, :item, :qt)");
-            $stmt->execute([
-                ':c'    => $_POST['display_chapter'],
-                ':item' => $_POST['item_id'],
-                ':qt'   => $_POST['quantite'],
-            ]);
-        }
+            $db->beginTransaction();
+            try {
+                // 1. Insertion du Chapitre (Toujours obligatoire)
+                $imagePath = $this->uploadImage($_FILES['image'] ?? null);
+                $stmt = $db->prepare("INSERT INTO Chapter (title, description, image) VALUES (:t, :d, :i)");
+                $stmt->execute([':t' => $_POST['display_name'], ':d' => $_POST['description'], ':i' => $imagePath]);
+                $newId = $db->lastInsertId();
     
+                // 2. Liaison Monstre (Facultatif)
+                if (!empty($_POST['monster_id'])) {
+                    $db->prepare("INSERT INTO Chapter_Monster (chapter_id, monster_id) VALUES (:c, :m)")
+                       ->execute([':c' => $newId, ':m' => $_POST['monster_id']]);
+                }
+    
+                // 3. Liaison Objet Simple (chapter_item - Facultatif)
+                if (!empty($_POST['item_id_simple'])) {
+                    $db->prepare("INSERT INTO Chapter_item (chapter_id, item_id) VALUES (:c, :i)")
+                       ->execute([':c' => $newId, ':i' => $_POST['item_id_simple']]);
+                }
+    
+                // 4. Liaison Trésor avec Quantité (Treasure - Facultatif)
+                if (!empty($_POST['treasure_item_id']) && !empty($_POST['treasure_qty'])) {
+                    $db->prepare("INSERT INTO Treasure (chapter_id, item_id, quantity) VALUES (:c, :i, :q)")
+                       ->execute([':c' => $newId, ':i' => $_POST['treasure_item_id'], ':q' => $_POST['treasure_qty']]);
+                }
+    
+                // 5. Liaison Choix (Chapter_Choice - Facultatif)
+                if (!empty($_POST['to_chapter_id']) && !empty($_POST['choice_text'])) {
+                    $db->prepare("INSERT INTO Chapter_Choice (from_chapter_id, to_chapter_id, choice_text) VALUES (:f, :t, :txt)")
+                       ->execute([':f' => $newId, ':t' => $_POST['to_chapter_id'], ':txt' => $_POST['choice_text']]);
+                }
+    
+                $db->commit();
+            } catch (\Exception $e) {
+                $db->rollBack();
+                exit("Erreur : " . $e->getMessage());
+            }
+        }
         header("Location: /DungeonXplorer/admin/dashboard?type=$type&success=addok");
         exit();
     }
 
+    public function updateContent($type, $id) {
+        @session_start();
+        $admin = \App\Models\User::find($_SESSION['userId'] ?? 0);
+        if (!$admin || !$admin->isAdmin()) {
+            header('HTTP/1.0 403 Forbidden');
+            exit("Accès refusé.");
+        }
+
+        $db = \App\Core\Database::getInstance();
+
+        if ($type === 'chapters') {
+            $db->beginTransaction();
+            try {
+                // 1. Mise à jour du chapitre
+                $imagePath = $this->uploadImage($_FILES['image'] ?? null, $id);
+                $sql = "UPDATE Chapter SET title = :t, description = :d" . ($imagePath ? ", image = :i" : "") . " WHERE id = :id";
+                $params = [':t' => $_POST['display_name'], ':d' => $_POST['description'], ':id' => $id];
+                if($imagePath) $params[':i'] = $imagePath;
+                $db->prepare($sql)->execute($params);
+
+                // Nettoyage et mise à jour des liaisons (Delete then Insert)
+                
+                // Monstre
+                $db->prepare("DELETE FROM Chapter_Monster WHERE chapter_id = :id")->execute([':id' => $id]);
+                if (!empty($_POST['monster_id'])) {
+                    $db->prepare("INSERT INTO Chapter_Monster (chapter_id, monster_id) VALUES (:c, :m)")->execute([':c' => $id, ':m' => $_POST['monster_id']]);
+                }
+
+                // Objet simple
+                $db->prepare("DELETE FROM Chapter_item WHERE chapter_id = :id")->execute([':id' => $id]);
+                if (!empty($_POST['item_id_simple'])) {
+                    $db->prepare("INSERT INTO Chapter_item (chapter_id, item_id) VALUES (:c, :i)")->execute([':c' => $id, ':i' => $_POST['item_id_simple']]);
+                }
+
+                // Trésor (On utilise chapter_id comme pivot)
+                $db->prepare("DELETE FROM Treasure WHERE chapter_id = :id")->execute([':id' => $id]);
+                if (!empty($_POST['treasure_item_id'])) {
+                    $db->prepare("INSERT INTO Treasure (chapter_id, item_id, quantity) VALUES (:c, :i, :q)")
+                    ->execute([':c' => $id, ':i' => $_POST['treasure_item_id'], ':q' => $_POST['treasure_qty']]);
+                }
+
+                // Choix
+                $db->prepare("DELETE FROM Chapter_Choice WHERE from_chapter_id = :id")->execute([':id' => $id]);
+                if (!empty($_POST['to_chapter_id'])) {
+                    $db->prepare("INSERT INTO Chapter_Choice (from_chapter_id, to_chapter_id, choice_text) VALUES (:f, :t, :txt)")
+                    ->execute([':f' => $id, ':t' => $_POST['to_chapter_id'], ':txt' => $_POST['choice_text']]);
+                }
+
+                $db->commit();
+            } catch (\Exception $e) {
+                $db->rollBack();
+                exit("Erreur update: " . $e->getMessage());
+            }
+        }
+        header("Location: /DungeonXplorer/admin/dashboard?type=$type&success=updateok");
+        exit();
+    }
+
+    public function deleteImage($filename) {
+        @session_start();
+        $admin = \App\Models\User::find($_SESSION['userId'] ?? 0);
+        if (!$admin || !$admin->isAdmin()) {
+            header('HTTP/1.0 403 Forbidden');
+            exit();
+        }
+    
+        // Sécurité : on empêche de sortir du dossier images via le nom de fichier
+        $filename = basename($filename);
+        $filePath = __DIR__ . '/../../resources/images/' . $filename;
+    
+        if (file_exists($filePath) && is_file($filePath)) {
+            unlink($filePath); // Supprime le fichier
+        }
+    
+        header("Location: /DungeonXplorer/admin/dashboard?success=supprimg");
+        exit();
+    }
 }

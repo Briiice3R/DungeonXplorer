@@ -5,6 +5,7 @@ session_start();
 require __DIR__ . '/vendor/autoload.php';
 
 use Bramus\Router\Router;
+
 // Create Router instance
 $router = new Router();
 
@@ -33,6 +34,7 @@ $router->get('/admin/delete/{type}/{id}', 'AdminController@deleteContent');
 $router->get('/admin/forge/data/{type}/{id}', 'AdminController@getForgeData');
 $router->post('/admin/forge/update/{type}/{id}', 'AdminController@updateContent');
 $router->post('/admin/forge/add/{type}', 'AdminController@addContent');
+$router->get('/admin/delete/image/{filename}', 'AdminController@deleteImage');
 
 // --- Routes Aventure (Nécessitent une connexion) ---
 $router->get('/aventureaccueil', "AventureController@index");
@@ -41,6 +43,7 @@ $router->get('/aventurecreate', "AventureController@create");
 // --- Routes Héros ---
 $router->post('/hero/create', "HeroController@create"); 
 $router->get('/choix-hero', "HeroController@index");
+$router->get('/hero/delete/{id}', 'HeroController@deleteAdventure');
 
 // --- Route pour reprendre une aventure spécifique ---
 $router->get('/chapter/reprendre/{heroId}/{chapterId}', 'ChapterController@resume');
