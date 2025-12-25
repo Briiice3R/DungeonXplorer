@@ -145,6 +145,12 @@
                                                     <?= htmlspecialchars($item['title'] ?? $item['name']) ?>
                                                 </div>
                                                 
+                                                <?php if ($type === 'monsters'): ?>
+                                                    <div class="text-[11px] text-[#C4975E] font-bold uppercase">
+                                                        <?= htmlspecialchars($item['description'] ?? 'Pas de description') ?>
+                                                    </div>
+                                                <?php endif; ?>
+
                                                 <?php if ($type === 'treasures'): ?>
                                                     <div class="text-[15px] text-[#C4975E] uppercase italic">
                                                     Chapitre <?= htmlspecialchars($item['chapter_num']) ?> • Items : <?= htmlspecialchars($item['title']) ?> • Qté: <?= htmlspecialchars($item['quantity']) ?>
@@ -282,6 +288,7 @@
         const monsterList = <?= json_encode($allMonsters ?? []) ?>;
         const itemList    = <?= json_encode($allItems ?? []) ?>;
         const chapterList = <?= json_encode($allChapters ?? []) ?>;
+        const monsterTypeList = <?= json_encode($monsterTypes ?? []) ?>;
 
         function renderForgeInputs(type, data = {}, showImage = true) {
             let html = `<div class="space-y-4">`;
@@ -292,17 +299,34 @@
                         <label class="block text-[#C4975E] text-xs font-bold uppercase mb-2">Nom du Monstre</label>
                         <input type="text" name="display_name" value="${data.name || ''}" required class="w-full bg-[#1A1A1A] border border-[#C4975E]/30 p-3 rounded text-white focus:border-[#C4975E] outline-none">
                     </div>
+                    <div>
+                        <label class="block text-[#C4975E] text-xs font-bold uppercase mb-2">Description / Capacités</label>
+                        <textarea name="display_desc" rows="3" class="w-full bg-[#1A1A1A] border border-[#C4975E]/30 p-3 rounded text-white focus:border-[#C4975E] outline-none">${data.description || ''}</textarea>
+                    </div>
                     <div class="grid grid-cols-2 gap-4">
                         <div><label class="block text-[#C4975E] text-[10px] font-bold uppercase mb-1">PV</label><input type="number" step="0.1" name="pv" value="${data.pv || 0}" class="w-full bg-[#1A1A1A] border border-[#C4975E]/30 p-2 rounded text-white"></div>
                         <div><label class="block text-[#C4975E] text-[10px] font-bold uppercase mb-1">Mana</label><input type="number" step="0.1" name="mana" value="${data.mana || 0}" class="w-full bg-[#1A1A1A] border border-[#C4975E]/30 p-2 rounded text-white"></div>
                         <div><label class="block text-[#C4975E] text-[10px] font-bold uppercase mb-1">Force</label><input type="number" step="0.1" name="strength" value="${data.strength || 0}" class="w-full bg-[#1A1A1A] border border-[#C4975E]/30 p-2 rounded text-white"></div>
+                        <div><label class="block text-[#C4975E] text-[10px] font-bold uppercase mb-1">Initiative</label><input type="number" step="0.1" name="initiative" value="${data.initiative || 0}" class="w-full bg-[#1A1A1A] border border-[#C4975E]/30 p-2 rounded text-white"></div>
                         <div><label class="block text-[#C4975E] text-[10px] font-bold uppercase mb-1">XP Drop</label><input type="number" step="0.1" name="drop_xp" value="${data.drop_xp || 0}" class="w-full bg-[#1A1A1A] border border-[#C4975E]/30 p-2 rounded text-white"></div>
+                        <div>
+                            <label class="block text-[#C4975E] text-[10px] font-bold uppercase mb-1">Type de Monstre</label>
+                            <select name="monster_type_id" class="w-full bg-[#1A1A1A] border border-[#C4975E]/30 p-2 rounded text-white outline-none focus:border-[#C4975E]">
+                                <option value="">-- Choisir un type --</option>
+                                ${monsterTypeList.map(t => `
+                                    <option value="${t.id}" ${data.monster_type_id == t.id ? 'selected' : ''}>
+                                        ${t.name.replace('_', ' ')}
+                                    </option>
+                                `).join('')}
+                            </select>
+                        </div>
                     </div>`;
             } 
             else if (type === 'chapters') {
                 const imgPath = data.image ? `/DungeonXplorer/${data.image}` : '/DungeonXplorer/resources/images/default_chapter.webp';
                 const title = data.title || data.name || '';
                 const description = data.description || '';
+                const choices = data.choices || []; // Liste des choix d'un chapitre
                 
                 html += `
                     <div class="space-y-4 bg-[#1A1A1A]/50 p-4 rounded border border-[#C4975E]/10">
@@ -348,15 +372,20 @@
                                 <input type="number" name="treasure_qty" value="${data.treasure_qty || ''}" placeholder="Qté" class="w-16 bg-[#1A1A1A] border border-blue-900/30 p-2 rounded text-white text-sm">
                             </div>
                         </div>
-
-                        <div class="p-4 bg-green-900/10 border border-green-900/20 rounded">
-                            <label class="block text-green-500 text-[10px] font-bold uppercase mb-2">Suite de l'Aventure</label>
-                            <div class="flex flex-col gap-2">
-                                <input type="text" name="choice_text" value="${data.choice_text || ''}" placeholder="Texte du bouton (ex: Ouvrir la porte)" class="w-full bg-[#1A1A1A] border border-green-900/30 p-2 rounded text-white text-sm focus:border-green-500 outline-none">
-                                <select name="to_chapter_id" class="w-full bg-[#1A1A1A] border border-green-900/30 p-2 rounded text-white text-sm focus:border-green-500 outline-none">
-                                    <option value="">Vers quel chapitre ?</option>
-                                    ${chapterList.map(c => `<option value="${c.id}" ${data.to_chapter_id == c.id ? 'selected' : ''}>Chapitre ${c.id} : ${c.title}</option>`).join('')}
-                                </select>
+                        
+                        <div class="p-4 bg-green-900/10 border border-green-900/20 rounded col-span-full">
+                            <div class="flex justify-between items-center mb-4">
+                                <label class="block text-green-500 text-[10px] font-bold uppercase">Suite de l'Aventure (Choix multiples)</label>
+                                <button type="button" onclick="addChoiceRow()" class="text-[10px] bg-green-600 text-white px-2 py-1 rounded hover:bg-green-500 transition">
+                                    <i class="fas fa-plus mr-1"></i> Ajouter un choix
+                                </button>
+                            </div>
+                            
+                            <div id="choicesContainer" class="space-y-3">
+                                ${choices.length > 0 ? 
+                                    choices.map((c, index) => generateChoiceHtml(c, index)).join('') : 
+                                    generateChoiceHtml()
+                                }
                             </div>
                         </div>
                     </div>
@@ -427,6 +456,33 @@
             document.getElementById('modalTitle').innerText = `Ajouter un nouveau ${type.slice(0, -1)}`;
             inputsContainer.innerHTML = renderForgeInputs(type, {}, true);
             initImageLogic(); // Active la prévisualisation
+        }
+
+        function generateChoiceHtml(choice = {}, index = Date.now()) {
+            return `
+                <div class="flex gap-2 items-start animate-in fade-in slide-in-from-left-2 duration-200" id="choice_row_${index}">
+                    <input type="text" name="choice_text[]" value="${choice.choice_text || ''}" placeholder="Texte du bouton..." 
+                        class="flex-1 bg-[#1A1A1A] border border-green-900/30 p-2 rounded text-white text-sm focus:border-green-500 outline-none">
+                    
+                    <select name="to_chapter_id[]" class="w-48 bg-[#1A1A1A] border border-green-900/30 p-2 rounded text-white text-sm focus:border-green-500 outline-none">
+                        <option value="">Vers...</option>
+                        ${chapterList.map(c => `<option value="${c.id}" ${choice.to_chapter_id == c.id ? 'selected' : ''}>Ch. ${c.id} : ${c.title}</option>`).join('')}
+                    </select>
+
+                    <button type="button" onclick="document.getElementById('choice_row_${index}').remove()" class="text-red-500 p-2 hover:bg-red-500/10 rounded transition">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            `;
+        }
+
+        function addChoiceRow() {
+            const container = document.getElementById('choicesContainer');
+            if (container) {
+                const div = document.createElement('div');
+                div.innerHTML = generateChoiceHtml();
+                container.appendChild(div.firstElementChild);
+            }
         }
 
         function closeModal() { document.getElementById('editModal').classList.add('hidden'); }

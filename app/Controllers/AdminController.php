@@ -23,6 +23,7 @@ class AdminController {
         $allMonsters = $db->query("SELECT id, name FROM Monster ORDER BY name")->fetchAll(\PDO::FETCH_ASSOC);
         $allItems = $db->query("SELECT id, name FROM Item ORDER BY name")->fetchAll(\PDO::FETCH_ASSOC);
         $allChapters = $db->query("SELECT id, title FROM Chapter ORDER BY id")->fetchAll(\PDO::FETCH_ASSOC);
+        $monsterTypes = $db->query("SELECT id, name FROM Monster_Type ORDER BY id ASC")->fetchAll(\PDO::FETCH_ASSOC);
 
         // Liste des utilisateurs
         $stmt = $db->query("SELECT id, username, email, created_at FROM User WHERE admin != 1 ORDER BY created_at DESC");
@@ -36,7 +37,7 @@ class AdminController {
             $stmt = $db->query("SELECT id, title, image FROM Chapter ORDER BY id ASC");
             $forgeItems = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         } elseif ($type === 'monsters') {
-            $stmt = $db->query("SELECT id, name FROM Monster ORDER BY id ASC");
+            $stmt = $db->query("SELECT id, name, description FROM Monster ORDER BY id ASC");
             $forgeItems = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         } elseif ($type === 'treasures') {
             $stmt = $db->query("SELECT t.item_id as id, i.name as title, c.title as subtitle, t.quantity, t.chapter_id as chapter_num FROM Treasure t JOIN Item i ON t.item_id = i.id JOIN Chapter c ON t.chapter_id = c.id ORDER BY t.chapter_id ASC");
@@ -151,9 +152,8 @@ class AdminController {
             $data['treasure_qty'] = $treasure['quantity'] ?? null;
             
             // Choix de destination (Table Chapter_Choice)
-            $choice = $db->query("SELECT to_chapter_id, choice_text FROM Chapter_Choice WHERE from_chapter_id = $id")->fetch(\PDO::FETCH_ASSOC);
-            $data['to_chapter_id'] = $choice['to_chapter_id'] ?? null;
-            $data['choice_text'] = $choice['choice_text'] ?? null;
+            $choices = $db->query("SELECT to_chapter_id, choice_text FROM Chapter_Choice WHERE from_chapter_id = $id")->fetchAll(\PDO::FETCH_ASSOC);
+            $data['choices'] = $choices ?: [];
         }
 
         header('Content-Type: application/json');
@@ -219,16 +219,27 @@ class AdminController {
                 }
     
                 // 5. Liaison Choix (Chapter_Choice - Facultatif)
-                if (!empty($_POST['to_chapter_id']) && !empty($_POST['choice_text'])) {
-                    $db->prepare("INSERT INTO Chapter_Choice (from_chapter_id, to_chapter_id, choice_text) VALUES (:f, :t, :txt)")
-                       ->execute([':f' => $newId, ':t' => $_POST['to_chapter_id'], ':txt' => $_POST['choice_text']]);
+                if (!empty($_POST['to_chapter_id'])) {
+                    foreach ($_POST['to_chapter_id'] as $key => $toId) {
+                        $text = $_POST['choice_text'][$key] ?? '';
+                        if (!empty($toId) && !empty($text)) {
+                            $db->prepare("INSERT INTO Chapter_Choice (from_chapter_id, to_chapter_id, choice_text) VALUES (:f, :t, :txt)")
+                               ->execute([':f' => $newId, ':t' => $toId, ':txt' => $text]);
+                        }
+                    }
                 }
     
                 $db->commit();
             } catch (\Exception $e) {
                 $db->rollBack();
-                exit("Erreur : " . $e->getMessage());
+                exit("Erreur Forge: " . $e->getMessage());
             }
+        } elseif ($type === 'monsters') {
+            $stmt = $db->prepare("INSERT INTO Monster (name, description, pv, mana, strength, initiative, drop_xp, monster_type_id) VALUES (:n, :desc, :pv, :mana, :s, :ini, :xp, :type_id)");
+            $stmt->execute([':n' => $_POST['display_name'], ':desc' => $_POST['display_desc'] ,':pv' => $_POST['pv'], ':mana' => $_POST['mana'], ':s' => $_POST['strength'], ':ini' => $_POST['initiative'], ':xp' => $_POST['drop_xp'], ':type_id' => $_POST['monster_type_id']]);
+        } elseif ($type === 'treasures') {
+            $stmt = $db->prepare("INSERT INTO Treasure (chapter_id, item_id, quantity) VALUES (:c, :i, :q)");
+            $stmt->execute([':c' => $_POST['display_chapter'], ':i' => $_POST['item_id'], ':q' => $_POST['quantite']]);
         }
         header("Location: /DungeonXplorer/admin/dashboard?type=$type&success=addok");
         exit();
@@ -278,8 +289,13 @@ class AdminController {
                 // Choix
                 $db->prepare("DELETE FROM Chapter_Choice WHERE from_chapter_id = :id")->execute([':id' => $id]);
                 if (!empty($_POST['to_chapter_id'])) {
-                    $db->prepare("INSERT INTO Chapter_Choice (from_chapter_id, to_chapter_id, choice_text) VALUES (:f, :t, :txt)")
-                    ->execute([':f' => $id, ':t' => $_POST['to_chapter_id'], ':txt' => $_POST['choice_text']]);
+                    foreach ($_POST['to_chapter_id'] as $key => $toId) {
+                        $text = $_POST['choice_text'][$key] ?? '';
+                        if (!empty($toId) && !empty($text)) {
+                            $db->prepare("INSERT INTO Chapter_Choice (from_chapter_id, to_chapter_id, choice_text) VALUES (:f, :t, :txt)")
+                               ->execute([':f' => $id, ':t' => $toId, ':txt' => $text]); // Utilisez $id au lieu de $newId pour l'update
+                        }
+                    }
                 }
 
                 $db->commit();
@@ -287,7 +303,16 @@ class AdminController {
                 $db->rollBack();
                 exit("Erreur update: " . $e->getMessage());
             }
+        } elseif ($type === 'monsters') {
+            $stmt = $db->prepare("UPDATE Monster SET name = :n, description = :desc, pv = :pv, mana = :mana, strength = :s, initiative = :ini, drop_xp = :xp, monster_type_id = :type_id WHERE id = :id");
+            $stmt->execute([':n' => $_POST['display_name'], ':desc' => $_POST['display_desc'], ':pv' => $_POST['pv'], ':mana' => $_POST['mana'], ':s' => $_POST['strength'], ':ini' => $_POST['initiative'], ':xp' => $_POST['drop_xp'], ':type_id' => $_POST['monster_type_id'], ':id' => $id
+            ]);
+        } elseif ($type === 'treasures') {
+            // Suppression/Réinsertion pour gérer le changement d'ID item
+            $db->prepare("DELETE FROM Treasure WHERE item_id = :old_id")->execute([':old_id' => $id]);
+            $db->prepare("INSERT INTO Treasure (chapter_id, item_id, quantity) VALUES (:c, :i, :q)")->execute([':c' => $_POST['display_chapter'], ':i' => $_POST['item_id'], ':q' => $_POST['quantite']]);
         }
+
         header("Location: /DungeonXplorer/admin/dashboard?type=$type&success=updateok");
         exit();
     }

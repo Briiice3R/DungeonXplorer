@@ -27,6 +27,9 @@ $router->get('/logout', "LogoutController@logout");
 $router->get('/forgotPassword', "ResetController@index1");
 $router->post('/forgotPassword', "ResetController@reset");
 $router->get('/checkResetPassword', "ResetController@index2");
+$router->post('/checkResetPassword', "ResetController@checkResetCode");
+$router->get('/resetPassword', "ResetController@index3");
+$router->post('/resetPassword', "ResetController@resetPassword");
 
 // --- Routes Authentification Admin ---
 $router->get('/admin/dashboard', 'AdminController@index');
