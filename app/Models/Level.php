@@ -31,7 +31,7 @@ class Level{
     {
         $db = Database::getInstance();
         if($this->level === null){
-            $stmt = $db->prepare("INSERT INTO level (required_xp, pv_bonus, mana_bonus, strength_bonus, initiative_bonus) VALUES (:required_xp, :pv_bonus, :mana_bonus, :strength_bonus, :initiative_bonus)");
+            $stmt = $db->prepare("INSERT INTO Level (required_xp, pv_bonus, mana_bonus, strength_bonus, initiative_bonus) VALUES (:required_xp, :pv_bonus, :mana_bonus, :strength_bonus, :initiative_bonus)");
             $stmt->execute([
                 ':required_xp' => $this->requiredXp,
                 ':pv_bonus' => $this->pvBonus,
@@ -41,7 +41,7 @@ class Level{
             ]);
             $this->level = $db->lastInsertId();
         } else{
-            $stmt = $db->prepare("UPDATE level SET required_xp = :required_xp, pv_bonus = :pv_bonus, mana_bonus = :mana_bonus, strength_bonus = :strength_bonus, initiative_bonus = :initiative_bonus WHERE level = :level");
+            $stmt = $db->prepare("UPDATE Level SET required_xp = :required_xp, pv_bonus = :pv_bonus, mana_bonus = :mana_bonus, strength_bonus = :strength_bonus, initiative_bonus = :initiative_bonus WHERE level = :level");
             $stmt->execute([
                 ':required_xp' => $this->requiredXp,
                 ':pv_bonus' => $this->pvBonus,
@@ -56,7 +56,7 @@ class Level{
     public static function find($level): ?Level
     {
         $db = Database::getInstance();
-        $stmt = $db->prepare("SELECT * FROM level WHERE level = :level");
+        $stmt = $db->prepare("SELECT * FROM Level WHERE level = :level");
         $stmt->execute([':level' => $level]);
         $data = $stmt->fetch();
         if(!$data){

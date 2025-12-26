@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <title>DungeonXplorer</title>
+        <link href="https://fonts.googleapis.com/css2?family=Pirata+One&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Pirata+One&family=Roboto:wght@400;700&display=swap');
+        </style>
+        <script src="../resources/js/FightSystem.js" defer></script>
+    </head>
+
+    <body class="font-['Roboto'] text-[#E5E5E5] bg-[#1A1A1A] min-h-screen flex flex-col">
+        <header class="bg-[#2E2E2E] p-4">
+            <?php include_once ("Navbar/Navbar.php"); ?>
+        </header>
+
+        <main>
+            <div class="flex justify-center ">
+                <div class="bg-[#2E2E2E] p-6 rounded-lg w-full max-w-lg text-center shadow-lg mt-6">
+                    <p class="font-['Roboto'] text-2xl text-[#E5E5E5] mt-8" id="affichage_log"></p>
+                </div>
+            </div>
+            <div class="flex flex-col md:flex-row justify-center items-center gap-6 p-8">
+            <div class="bg-[#2E2E2E] p-6 rounded-lg w-full max-w-lg text-center shadow-lg">
+                <h2 class="font-['Pirata_one'] text-5xl text-center text-[#C4975E] mb-6">Héros</h2>
+                <div class="flex justify-center text-center">
+                    <p class="font-['Roboto'] text-2xl text-[#E5E5E5] mt-8">Pv : </p>
+                    <p class="font-['Roboto'] text-2xl text-[#E5E5E5] mt-8" id="pv_heros" class="text-lg mb-2">000</p>
+                    <p class="font-['Roboto'] text-2xl text-[#E5E5E5] mt-8"> / </p>
+                    <p class="font-['Roboto'] text-2xl text-[#E5E5E5] mt-8" id="pvMax_heros">000</p>
+                </div>
+                <div class="flex justify-center text-center">
+                <p class="font-['Roboto'] text-2xl text-[#E5E5E5] mt-8">Mana : </p>
+                    <p class="font-['Roboto'] text-2xl text-[#E5E5E5] mt-8" id="mana_heros" class="text-lg mb-4">000</p>
+                </div>
+                <div class="flex justify-center text-center">
+                    <p class="font-['Roboto'] text-2xl text-[#E5E5E5] mt-8">Force : </p>
+                    <p class="font-['Roboto'] text-2xl text-[#E5E5E5] mt-8" id="force_heros">000</p>
+                </div>
+                <div class="flex justify-center text-center">
+                    <p class="font-['Roboto'] text-2xl text-[#E5E5E5] mt-8">Initiative : </p>
+                    <p class="font-['Roboto'] text-2xl text-[#E5E5E5] mt-8 mb-2" id="initiative_heros">000</p>
+                </div>
+
+                <h3 class="font-['Pirata_one'] text-3xl text-center text-[#C4975E] mb-6">Choix de l'attaque</h3>
+                <button id="attaque" class="bg-[#C4975E] hover:bg-[#8B1E1E] rounded-md py-2 px-4 mb-2 text-2xl">Lancer une attaque</button>
+
+                <h3 class="font-['Pirata_one'] text-3xl text-center text-[#C4975E] mb-6">Choix du sort</h3>
+                <div class="flex flex-col gap-2">
+                    <button id="sort_empoisonnement" class=" text-2xl bg-[#C4975E] hover:bg-[#8B1E1E] rounded-md py-2 px-4">Sort d'empoisonnement : -30 pv pour l'ennemi</button>
+                    <button id="sort_soin" class="text-2xl bg-[#C4975E] hover:bg-[#8B1E1E] rounded-md py-2 px-4">Sort de soin : 20 pv</button>
+                    <button id="sort_force" class="text-2xl bg-[#C4975E] hover:bg-[#8B1E1E] rounded-md py-2 px-4">Sort d'attaque : 20</button>
+                    <button id="sort_mana" class="text-2xl bg-[#C4975E] hover:bg-[#8B1E1E] rounded-md py-2 px-4 mb-2">Sort de mana : 20</button>
+                </div>
+
+                <h3 class="font-['Pirata_one'] text-3xl text-center text-[#C4975E] mb-6">Choix de la potion</h3>
+                <div class="flex flex-col gap-2">
+                    <button id="potion_soin" class="text-2xl bg-[#C4975E] hover:bg-[#8B1E1E] rounded-md py-2 px-4"></button>
+                    <button id="potion_force" class="text-2xl bg-[#C4975E] hover:bg-[#8B1E1E] rounded-md py-2 px-4"></button>
+                    <button id="potion_mana" class="text-2xl bg-[#C4975E] hover:bg-[#8B1E1E] rounded-md py-2 px-4"></button>
+                </div>
+            </div>
+
+           
+            <div class="bg-[#2E2E2E] p-6 rounded-lg w-full max-w-lg text-center shadow-lg">
+                <h2 class="font-['Pirata_one'] text-5xl text-center text-[#C4975E] mb-6">Monstre</h2>
+                <p class="font-['Roboto'] text-2xl text-[#E5E5E5] mt-8" id="nom_monstre" class="text-lg mb-2">Monstre</p>
+                <p class="font-['Roboto'] text-2xl text-[#E5E5E5] mt-8" id="description_monstre"></p>
+                <div class="flex justify-center text-center">
+                    <p class="font-['Roboto'] text-2xl text-[#E5E5E5] mt-8">Pv : </p>
+                    <p class="font-['Roboto'] text-2xl text-[#E5E5E5] mt-8" id="pv_monstre" class="text-lg mb-2">000</p>
+                </div>
+            </div>
+            </div>
+        </main>
+        <script>
+            window.gameConfig = {
+                heroData: <?= json_encode($heroData) ?>,
+                monsterData: <?= json_encode($monsterData) ?>,
+                poisoningSpellData: <?= json_encode($poisoningSpellData) ?>,
+                careSpellData: <?= json_encode($careSpellData) ?>,
+                strengthSpellData: <?= json_encode($strengthSpellData) ?>,
+                manaSpellData: <?= json_encode($manaSpellData) ?>,
+                afterChapterData: <?= json_encode($afterChapterData) ?>,
+                deathChapterData: <?= json_encode($deathChapterData) ?>
+            };
+            console.log(window.gameConfig);
+        </script>
+        <footer class="bg-[#2E2E2E] text-center p-4 mt-auto">
+            <p class="mb-2">&copy; 2025 DungeonXplorer. Tous droits réservés.</p>
+            <a href="https://github.com/Briiice3R/DungeonXplorer" class="text-[#C4975E] mx-2 text-2xl">
+                <i class="fa-brands fa-github"></i>
+            </a>
+        </footer>
+    </body>
+</html>

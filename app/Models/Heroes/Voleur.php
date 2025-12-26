@@ -1,6 +1,9 @@
 <?php
 namespace App\Models\Heroes;
 
+use App\Models\User;
+use App\Models\Level;
+
 class Voleur extends Hero{
 
     public function __construct(
@@ -13,12 +16,13 @@ class Voleur extends Hero{
         $mana,
         $strength,
         $initiative,
-        $armor,
-        $primaryWeapon,
-        $secondaryWeapon,
-        $level,
-        $user,
-        $heroType
+        User $user,
+        ?Inventory $inventory,
+        HeroType $heroType,
+        Level $level,
+        ?Armor $armor,
+        ?Weapon $primaryWeapon,
+        ?Weapon $secondaryWeapon,
     )
     {
         parent::__construct(
@@ -26,17 +30,18 @@ class Voleur extends Hero{
             $name,
             $image,
             $biography,
-            $pv,
-            $initiative,
-            $strength,
-            $mana,
             $xp,
+            $pv,
+            $mana,
+            $strength,
+            $initiative,
+            $user,
+            $inventory,
+            $heroType,
+            $level,
             $armor,
             $primaryWeapon,
-            $secondaryWeapon,
-            $level,
-            $user,
-            $heroType
+            $secondaryWeapon
         );
     }
 

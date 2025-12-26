@@ -1,6 +1,11 @@
 <?php
 namespace App\Models\Heroes;
 use App\Models\Items\Potion;
+use App\Models\User;
+use App\Models\Level;
+use App\Models\Items\Weapon;
+use App\Models\Items\Armor;
+
 class Guerrier extends Hero{
 
     public function __construct(
@@ -13,13 +18,13 @@ class Guerrier extends Hero{
         $mana,
         $strength,
         $initiative,
-        $user,
-        $inventory,
-        $heroType,
-        $level,
-        $armor,
-        $primaryWeapon,
-        $secondaryWeapon,
+    User       $user,
+    ?Inventory $inventory,
+    HeroType  $heroType,
+    Level     $level,
+    ?Armor     $armor,
+    ?Weapon    $primaryWeapon,
+    ?Weapon    $secondaryWeapon
     )
     {
         parent::__construct(

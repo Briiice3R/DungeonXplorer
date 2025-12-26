@@ -18,6 +18,14 @@ class Register{
         $password = $_POST["password_1"];
         $email = trim($_POST["email"]);
 
+        $validGenders = ['male', 'female', 'other', 'prefer_not_to_say'];
+        
+        $selectedGender = $_POST['gender'] ?? null;
+        
+        if($selectedGender===null){
+            return -1;
+        }
+
     
         $req_verif_1 = Database::getInstance()->prepare("SELECT count(*) FROM User WHERE email=:email");
         $req_verif_1->bindParam(':email', $email);
@@ -48,12 +56,13 @@ class Register{
         }
 
 
-        if($_POST["password_1"]==$_POST["password_2"] && $username!="" && $password!="" && $email!="" && filter_var($email, FILTER_VALIDATE_EMAIL) && strlen($username)<=100 && strlen($password)<=255 && strlen($email)<=254){
+        if($_POST["password_1"]==$_POST["password_2"] && $username!="" && $password!="" && $email!="" && filter_var($email, FILTER_VALIDATE_EMAIL) && strlen($username)<=100 && strlen($password)<=255 && strlen($email)<=254 && in_array($selectedGender, $validGenders)){
             $hashPassword = password_hash($password, PASSWORD_DEFAULT);
-            $req = Database::getInstance()->prepare("INSERT INTO User (username, password, email, admin) VALUES (:username, :password, :email, 0)");
+            $req = Database::getInstance()->prepare("INSERT INTO User (username, password, email, gender, admin) VALUES (:username, :password, :email, :gender, 0)");
             $req->bindParam(':username',$username);
             $req->bindParam(':password',$hashPassword);
             $req->bindParam(':email',$email);
+            $req->bindParam(':gender',$selectedGender);
             $req->execute();
 
             $req_id = Database::getInstance()->prepare("SELECT id FROM User WHERE username=:username");
