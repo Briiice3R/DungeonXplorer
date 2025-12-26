@@ -11,6 +11,7 @@ if (!isset($_SESSION["loginError"])) {
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+    <link rel="icon" href="/DungeonXplorer/favicon.ico" type="image/x-icon">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Connexion - DungeonXplorer</title>
@@ -42,9 +43,9 @@ if (!isset($_SESSION["loginError"])) {
             <input id="password" name="password" type="password" class="w-full bg-[#2E2E2E] border border-[#C4975E] text-[#E5E5E5] rounded p-2 mb-4 focus:outline-none focus:border-[#8B1E1E]" required>
             <input type="submit" value="Se connecter" class="w-full bg-[#C4975E] hover:bg-[#8B1E1E] text-white rounded-md p-2 cursor-pointer font-['Pirata_One'] text-2xl">
         </form>
-        <!-- <a href="forgotPassword" class="block w-full mt-3 bg-[#1A1A1A] hover:bg-[#8B1E1E] text-gray-500 hover:text-white rounded-md p-1 cursor-pointer  text-base text-center">
+        <a href="forgotPassword" class="block w-full mt-3 bg-[#1A1A1A] hover:bg-[#8B1E1E] text-gray-500 hover:text-white rounded-md p-1 cursor-pointer  text-base text-center">
             Mot de passe oublié ?
-        </a> -->
+        </a>
         <hr class="border-t-2 border-[#C4975E] mb-2 mt-4">
         <label class="block text-center text-[#C4975E] text-xl mb-2">Pas de compte ?</label>
         <a href="signup" class="block w-full bg-[#C4975E] hover:bg-[#8B1E1E] text-white rounded-md p-2 cursor-pointer font-['Pirata_One'] text-2xl text-center">

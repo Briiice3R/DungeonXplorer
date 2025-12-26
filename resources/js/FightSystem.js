@@ -20,6 +20,7 @@ let affichageForceHeros = document.getElementById('force_heros');
 let affichageLog = document.getElementById('affichage_log');
 let affichageInitiativeHeros = document.getElementById('initiative_heros');
 let affichagePvMaxHeros = document.getElementById('pvMax_heros');
+let affichageDescriptionMonstre = document.getElementById('description_monstre');
 
 let boutonSortEmpoisonnement = document.getElementById('sort_empoisonnement');
 let boutonSortSoin = document.getElementById('sort_soin');
@@ -37,6 +38,8 @@ affichageForceHeros.textContent = heroData.strength;
 affichageManaHeros.textContent = heroData.mana;
 affichageInitiativeHeros.textContent = heroData.initiative;
 affichagePvMaxHeros.textContent = heroData.maxPv;
+affichageDescriptionMonstre.textContent = monsterData.description;
+affichageNomMonstre.textContent = monsterData.name;
 const potionSoin = heroData.inventory.find(item => 
     item.type === 'Potion' && item.effectType === 'soin'
 );
