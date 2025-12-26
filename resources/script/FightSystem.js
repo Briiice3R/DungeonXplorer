@@ -1,7 +1,14 @@
-
+const { heroData, monsterData } = window.gameConfig;
+console.log(heroData);
+console.log(monsterData);
+   
     let affichagePvHeros = document.getElementById('pv_heros');
     let affichagePvMonstre = document.getElementById('pv_monstre');
     let affichageManaHeros = document.getElementById('mana_heros');
+    let affichageNomMonstre = document.getElementById('nom_monstre');
+    let affichageForceHeros = document.getElementById('force_heros');
+    let affichageLog = document.getElementById('affichage_log');
+
     let boutonSortEmpoisonnement = document.getElementById('sort_empoisonnement');
     let boutonSortSoin = document.getElementById('sort_soin');
     let boutonSortForce = document.getElementById('sort_force');
@@ -10,14 +17,18 @@
     let boutonPotionForce = document.getElementById('potion_force');
     let boutonPotionMana = document.getElementById('potion_mana');
     let boutonAttaque = document.getElementById('attaque');
-    let nomMonstre = document.getElementById('nom_monstre');
-    let affichageForce = document.getElementById('force_heros');
-    let affichageLog = document.getElementById('affichage_log');
+    
 
+    affichagePvHeros.textContent = heroData.pv;
+    affichagePvMonstre.textContent = monsterData.pv;
+    affichageForceHero.textContent = heroData.strength;
+    affichageManaHeros.textContent = heroData.mana;
+    
+    
     /**** caractéristique héros ****/
 
-    let nbPvHeros = 300;
-    let forceHeros = 20;
+    
+    let forceHeros = hero.strength;
     let nbManaHeros = 100;
     let coutManaSort = 10;
     let initiativeHeros = 30;
@@ -62,26 +73,29 @@
     let manaMonstre = 100;
     let xpMonstre = 100;
 
-
-   /* document.addEventListener('DOMContentLoaded', () => {
-        // Les données sont déjà disponibles
-        const fight = new FightSystem(heroData, monsterData);
-        fight.init();
-    });
-  
-    nomMonstre.textContent = fight.name;*/
       
   /**** fonctions ****/  
 
  //Lance une attaque simple sur le monstre
     function attaqueSimple(){
-        if(nbPvMonstre > 0 && nbPvHeros >0){
-        pvRestant = nbPvMonstre - forceHeros;
-        if(pvRestant < 0){
-            pvRestant = 0;
+        if(this.monster.pv > 0 && nbPvHeros >0){
+            this.monster.pv = this.monster.pv - forceHeros;
+        if(this.monster.pv < 0){
+            this.monster.pv = 0;
         }
-        affichagePvMonstre.textContent = pvRestant;
-        nbPvMonstre = pvRestant;
+        affichagePvMonstre.textContent = this.monster.pv;
+        }
+    }
+
+    //Le monstre lance une attaque simple sur le héros
+
+    function monstreAttaque(){
+        if(nbPvHeros > 0 && nbPvMonstre >0){
+            nbPvHeros = nbPvHeros - forceMonstre;
+            if(nbPvHeros < 0){
+                nbPvHeros =0;
+            }
+            affichagePvHeros.textContent = nbPvHeros;
         }
     }
 
@@ -103,6 +117,23 @@
         }
     }
 
+    //Le monstre lance un sort d'empoisonnement
+
+    function monstreLancerSortEmpoisonnement(){
+        manaMonstre = manaMonstre - coutManaSort;
+        if(manaMonstre >=0 && nbPvMonstre >0 && nbPvHeros >0){
+            nbPvHeros = nbPvHeros - dommageSort;
+            if(nbPvHeros <0){
+                pvRestant =0;
+            }
+            affichagePvHeros.textContent = nbPvHeros;
+        }
+        else{
+            manaMonstre =0;
+            affichageLog.textContent = "Le monstre n'a plus assez de mana pour jeter un sort";
+        }
+    }
+
     //Lance un sort de soin
 
     function lancerSortSoin(){
@@ -118,11 +149,25 @@
         }
     }
 
+    //Le monstre lance un sort de soin
+    function monstreLancerSortSoin(){
+        manaMonstre = manaMonstre - coutManaSort;
+        if(manaMonstre >=0 && nbPvHeros >0){
+            nbPvMonstre = nbPvMonstre + soinSort;
+            affichagePvMonstre.textContent = nbPvMonstre;
+            affichageManaHeros.textContent = manaMonstre;
+        }
+        else{
+            manaMonstre =0;
+            affichageLog.textContent = "Vous n'avez plus assez de mana pour jeter un sort";
+        }
+    }
+
     //Lance un sort qui augmente la force
 
     function lancerSortForce(){
         nbManaHeros = nbManaHeros - coutManaSort;
-        if(nbManaHeros >=0 && nbPvHeros >0){
+        if(nbManaHeros >=0 && nbPvMonstre >0){
             forceHeros = forceHeros + forceSort;
             affichageForce.textContent = forceHeros;
             affichageManaHeros.textContent = nbManaHeros;
@@ -130,6 +175,19 @@
         else{
             nbManaHeros =0;
             affichageLog.textContent = "Vous n'avez plus assez de mana pour jeter un sort";
+        }
+    }
+
+    //Le monstre lance un sort de force
+    function monstreLancerSortForce(){
+        manaMonstre = manaMonstre - coutManaSort;
+        if(manaMonstre >=0 && nbPvMonstre >0){
+            forceMonstre = forceMonstre + forceSort;
+            affichageForce.textContent = forceMonstre;
+        }
+        else{
+            manaMonstre =0;
+            affichageLog.textContent = "Le monstre n'a plus assez de mana pour jeter un sort";
         }
     }
 
@@ -210,16 +268,9 @@
     /******  début du programme ******/
 
     /*lien affichage et valeur*/
-    affichagePvHeros.textContent = nbPvHeros;
-    affichageManaHeros.textContent = nbManaHeros;
-    affichagePvMonstre.textContent = nbPvMonstre;
-    affichageForce.textContent = forceHeros;
-    boutonPotionForce.textContent = nbPotionForce + " : Potion de force : " +  forcePotion;
-    boutonPotionSoin.textContent = nbPotionSoin + " : Potion de soin : " +  soinPotion + "pv"; 
-    boutonPotionMana.textContent = nbPotionMana + " : Potion de mana : " +  manaPotion;
-    nomMonstre.textContent = "Le loup noir";
-
     
+
+       
         boutonAttaque.addEventListener('click', ()=>{
             attaqueSimple();
         });
@@ -251,5 +302,7 @@
         boutonPotionForce.addEventListener('click', ()=>{
             lancerPotionForce();
         })
-        
+
+    
+
 

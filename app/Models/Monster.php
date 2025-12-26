@@ -3,7 +3,8 @@
 // models/Monster.php
 namespace App\Models\Monsters;
 use App\Core\Database;
-abstract class Monster
+use App\Models\Monsters\MonsterType;
+class Monster
 {
     protected ?int $id;
     protected string $name;
@@ -23,14 +24,15 @@ abstract class Monster
         $query->execute();
         $data = $query->fetch(\PDO::FETCH_ASSOC);
         if($data){
+            $this->id=$id;
             $this->name = $data['name'];
             $this->description = $data['description'];
             $this->pv = $data['pv'];
             $this->mana = $data['mana'];
             $this->initiative = $data['initiative'];
             $this->strength = $data['strength'];
-            $this->dropXp = $data['dropXp'];
-            $this->monsterType = $data['monsterType'];
+            $this->dropXp = $data['drop_xp'];
+            $this->monsterType = MonsterType::find($data['monster_type_id']);
         }
 
 
@@ -71,41 +73,12 @@ abstract class Monster
     }
 
     public static function find($id){
-        $db = Database::getInstance();
-        $stmt = $db->prepare("SELECT * FROM Monster WHERE id = :id");
-        $stmt->execute([':id' => $id]);
-        $result = $stmt->fetch();
-        if(!$result){
-            return null;
-        }
-        $monsterType = MonsterType::find($result['monster_type_id']);
-        switch($monsterType->getName()){
-            case 'Orc':
-                return new Orc(
-                    $result['id'],
-                    $result['name'],
-                    $result['description'],
-                    $result['pv'],
-                    $result['mana'],
-                    $result['initiative'],
-                    $result['strength'],
-                    $result['dropXp']
-                );
-            default:
-                return null;
-        }
+        return new Monster($id);
+
     }
-
-    abstract public function attack();
-
-
     public function getName(): string
     {
         return $this->name;
-    }
-
-    public function getId(): string{
-        return $this->id;
     }
 
     public function getDescription(): string
@@ -141,7 +114,10 @@ abstract class Monster
         return $this->monsterType;
     }
 
+    public function getId():int{
+        return $this->id;
+    }
+
 
 }
-
 

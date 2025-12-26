@@ -69,7 +69,12 @@
             </div>
             </div>
         </main>
-
+        <script>
+            window.gameConfig = {
+                heroData: <?= json_encode($heroData) ?>,
+                monsterData: <?= json_encode($monsterData) ?>
+            };
+        </script>
         <footer class="bg-[#2E2E2E] text-center p-4 mt-auto">
             <p class="mb-2">&copy; 2025 DungeonXplorer. Tous droits réservés.</p>
             <a href="https://github.com/Briiice3R/DungeonXplorer" class="text-[#C4975E] mx-2 text-2xl">
@@ -78,7 +83,3 @@
         </footer>
     </body>
 </html>
-<script>
-     /*const heroData = <php?= json_encode($heroData) ?>;
-     const monsterData = <php?= json_encode($monsterData) ?>; */
- </script>

@@ -17,16 +17,22 @@ class FightController
 {
     public function show($idChapitre)
     {
-       /* $hero = Hero::find(3); 
-        $monster = Monster::find(1); 
+        $hero = Hero::find($_SESSION['active_hero_id']);
 
-        if ($hero === null || $monster === null) {
+        $db = \App\Core\Database::getInstance();
+        $stmt = $db->prepare("SELECT monster_id from Chapter_Monster WHERE chapter_id = :chapter");
+        $stmt->execute([':chapter' => $idChapitre]);
+        $monsterId=$stmt->fetchColumn();
+        
+        $monster = Monster::find($monsterId); 
+        
+        if ($hero == null || $monster == null) {
             die("Héros ou Monstre introuvable !");
         }
 
         // Préparer les données pour JavaScript
         $heroData = $this->prepareHeroData($hero);
-        $monsterData = $this->prepareMonsterData($monster);*/
+        $monsterData = $this->prepareMonsterData($monster);
 
         include __DIR__ . "/../../resources/views/FightPage.php";
     }
