@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr">
     <head>
+        <link rel="icon" href="/DungeonXplorer/favicon.ico" type="image/x-icon">
         <meta charset="UTF-8">
         <title>DungeonXplorer</title>
         <link href="https://fonts.googleapis.com/css2?family=Pirata+One&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
@@ -21,7 +22,7 @@
                 <hr class="border-[#C4975E] mb-6">
                 <form action='<?php echo "/DungeonXplorer/update/".$_SESSION["userId"];?>' method="POST">
                     <label for="username">Votre nom : </label>
-                    <input name="username" class="mb-5 bg-[#2E2E2E] rounded-md p-1" type="text" placeholder='<?php echo $updateProfileController->get_Name()?>'>
+                    <input name="username" class="mb-5 bg-[#2E2E2E] rounded-md p-1" type="text" placeholder='<?php echo htmlspecialchars($updateProfileController->get_Name())?>'>
                     </br>
                      <label for="gender">Votre genre : </label>
                     <input name="gender" value="female" class="mb-5 bg-[#2E2E2E] rounded-md p-1" type="radio" <?php if($updateProfileController->get_Gender() == 'Female') {echo "checked";}?>>
@@ -38,7 +39,7 @@
 
                     </br>
                     <label for="email">Votre adresse mail : </label>
-                    <input name="email" class="mb-5 bg-[#2E2E2E] rounded-md p-1" type="text" placeholder='<?php echo $updateProfileController->get_Email()?>'>
+                    <input name="email" class="mb-5 bg-[#2E2E2E] rounded-md p-1" type="text" placeholder='<?php echo htmlspecialchars($updateProfileController->get_Email())?>'>
                     </br>
                     <label for="password">Votre mot de passe : </label>
                     <input name="password" class="mb-5 bg-[#2E2E2E] rounded-md p-1" type="password" min="1925-01-01" max="2025-12-02">

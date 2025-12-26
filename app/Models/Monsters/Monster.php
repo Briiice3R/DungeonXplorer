@@ -3,7 +3,8 @@
 // models/Monster.php
 namespace App\Models\Monsters;
 use App\Core\Database;
-abstract class Monster
+use App\Models\Monsters\MonsterType;
+class Monster
 {
     protected ?int $id;
     protected string $name;
@@ -15,17 +16,26 @@ abstract class Monster
     protected float $dropXp;
     protected MonsterType $monsterType;
 
-    public function __construct($id, $name, $description, $pv, $mana, $initiative, $strength, $dropXp, $monsterType)
+    public function __construct($id)
     {
-        $this->id = $id;
-        $this->name = $name;
-        $this->description = $description;
-        $this->pv = $pv;
-        $this->mana = $mana;
-        $this->initiative = $initiative;
-        $this->strength = $strength;
-        $this->dropXp = $dropXp;
-        $this->monsterType = $monsterType;
+        $data = Database::getInstance();
+        $query = $data->prepare("SELECT * FROM Monster  WHERE id = :id");
+        $query->bindParam(':id', $id);
+        $query->execute();
+        $data = $query->fetch(\PDO::FETCH_ASSOC);
+        if($data){
+            $this->id=$id;
+            $this->name = $data['name'];
+            $this->description = $data['description'];
+            $this->pv = $data['pv'];
+            $this->mana = $data['mana'];
+            $this->initiative = $data['initiative'];
+            $this->strength = $data['strength'];
+            $this->dropXp = $data['drop_xp'];
+            $this->monsterType = MonsterType::find($data['monster_type_id']);
+        }
+
+
     }
 
     public function save(){
@@ -33,7 +43,7 @@ abstract class Monster
         $monsterTypeId = $this->monsterType->getId();
         if($this->id === null){
             // Insert new monster
-            $stmt = $db->prepare("INSERT INTO monster (name, description, pv, mana, initiative, strength, dropXp, monster_type_id) VALUES (:name, :description, :pv, :mana, :initiative, :strength, :dropXp, :monsterTypeId)");
+            $stmt = $db->prepare("INSERT INTO Monster (name, description, pv, mana, initiative, strength, dropXp, monster_type_id) VALUES (:name, :description, :pv, :mana, :initiative, :strength, :dropXp, :monsterTypeId)");
             $stmt->execute([
                 ':name' => $this->name,
                 ':description' => $this->description,
@@ -47,7 +57,7 @@ abstract class Monster
             $this->id = $db->lastInsertId();
         } else {
             // Update existing monster
-            $stmt = $db->prepare("UPDATE monster SET name = :name, description = :description, pv = :pv, mana = :mana, initiative = :initiative, strength = :strength, dropXp = :dropXp, monster_type_id = :monsterTypeId WHERE id = :id");
+            $stmt = $db->prepare("UPDATE Monster SET name = :name, description = :description, pv = :pv, mana = :mana, initiative = :initiative, strength = :strength, dropXp = :dropXp, monster_type_id = :monsterTypeId WHERE id = :id");
             $stmt->execute([
                 ':name' => $this->name,
                 ':description' => $this->description,
@@ -63,32 +73,10 @@ abstract class Monster
     }
 
     public static function find($id){
-        $db = Database::getInstance();
-        $stmt = $db->prepare("SELECT * FROM monster WHERE id = :id");
-        $stmt->execute([':id' => $id]);
-        $result = $stmt->fetch();
-        if(!$result){
-            return null;
-        }
-        $monsterType = MonsterType::find($result['monster_type_id']);
-        switch($monsterType->getName()){
-            case 'Orc':
-                return new Orc(
-                    $result['id'],
-                    $result['name'],
-                    $result['description'],
-                    $result['pv'],
-                    $result['mana'],
-                    $result['initiative'],
-                    $result['strength'],
-                    $result['dropXp']
-                );
-            default:
-                return null;
-        }
+        return new Monster($id);
+
     }
 
-    abstract public function attack();
 
 
     public function getName(): string
@@ -129,5 +117,20 @@ abstract class Monster
         return $this->monsterType;
     }
 
+    public function getId():int{
+        return $this->id;
+    }
+
+    public function getLoot(): array{
+        $stmt = $db->prepare("SELECT item_id, quantity FROM Monster_Loot WHERE monster_id=:id");
+        $stmt->execute([
+            ':id' => $this->id
+        ]);
+        return $stmt->fetchAll();
+    }
+
+
+
 
 }
+

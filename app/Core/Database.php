@@ -10,7 +10,7 @@ class Database{
     private static $instance = null;
     private $db;
 
-    private function __construct()
+    public function __construct()
     {
         $envFile = __DIR__ . '/../../.env';
         if (!file_exists($envFile)) {

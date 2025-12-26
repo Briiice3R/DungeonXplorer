@@ -11,6 +11,7 @@
         protected $password;
         protected $created_at;
         protected $gender;
+        protected $admin;
         
         
         // Crée un profile à partir de l'id et des autres données d'un compte lié à cet id dans la base de données
@@ -23,7 +24,19 @@
                 $this->password = $data['password'];
                 $this->created_at = $data['created_at'];
                 $this->gender = $data['gender'];
+                $this->admin = (int)$data['admin'];
+            } else {
+                $this->id = null; // Important pour la méthode find()
             }
+        }
+
+        public static function find($id): ?User {
+            $user = new User($id);
+            // Si après l'init le nom est vide, c'est que l'user n'existe pas en BDD
+            if ($user->get_Id() === null || $user->get_Name() === null) {
+                return null;
+            }
+            return $user;
         }
         
         // Retourne le nom de l'utilisateur
@@ -102,26 +115,27 @@
     public function maj_Profil($id, $username, $email, $password, $gender){
         $data = Database::getInstance();
         
-        if( $username != null ){
+        if( $username != null && strlen($username)<=100){
             $query = $data->prepare(" UPDATE User SET username= :username WHERE id= :id");
             $query->bindParam(':id', $id);
             $query->bindParam(':username', $username);
             $query->execute();
         }
-        if( $password != null ){
+        if( $password != null && strlen($password)<=255){
             $hash = password_hash($password, PASSWORD_BCRYPT);
             $query = $data->prepare(" UPDATE User SET password = :password WHERE id= :id");
             $query->bindParam(':id', $id);
             $query->bindParam(':password', $hash);
             $query->execute();
         }
-        if($email !=null){
+        if($email !=null && strlen($password)<=254){
             $query = $data->prepare(" UPDATE User SET email = :email WHERE id= :id");
             $query->bindParam(':id', $id);
             $query->bindParam(':email', $email);
             $query->execute();
         }
-        if($gender !=null){
+        $validGenders = ['male', 'female', 'other', 'prefer_not_to_say'];
+        if($gender !=null && in_array($gender, $validGenders)){
             $query = $data->prepare(" UPDATE User SET gender = :gender WHERE id= :id");
             $query->bindParam(':id', $id);
             $query->bindParam(':gender', $gender);
@@ -135,8 +149,15 @@
         $query = $data->prepare(" DELETE FROM User WHERE id= :id");
         $query->bindParam(':id', $id);
         $query->execute();
-        session_destroy();
-        session_unset();
+        if (isset($_SESSION['userId']) && $_SESSION['userId'] == $id) {
+            session_destroy();
+            session_unset();
+        }
+    }
+
+    public function isAdmin() {
+        // Vérifie si la colonne admin est égale à "1"
+        return $this->admin === 1;
     }
 }
 

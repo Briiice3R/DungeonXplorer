@@ -1,58 +1,64 @@
 <?php
 namespace App\Controllers;
 use App\Models\Chapters\Chapter;
+use App\Models\Heroes\Hero;
 
 class ChapterController
 {
-    private $chapters = [];
+    public function show($id) {
+        $chapter = Chapter::find($id); 
+        $heroId = $_SESSION['active_hero_id'] ?? null; 
 
-    public function __construct()
-    {
-        // Exemple de chapitres avec des images
-        $this->chapters[] = new Chapter(
-            1,
-            "La Forêt Enchantée",
-            "Vous vous trouvez dans une forêt sombre et enchantée. Deux chemins se présentent à vous.",
-            "/public/images/forêt.jpg", // Chemin vers l'image
-            [
-                ["text" => "Aller à gauche", "chapter" => 2],
-                ["text" => "Aller à droite", "chapter" => 3]
-            ]
-        );
-
-        $this->chapters[] = new Chapter(
-            2,
-            "Le Lac Mystérieux",
-            "Vous arrivez à un lac aux eaux limpides. Une créature vous observe.",
-            "/public/images/lac.jpg", // Chemin vers l'image
-            [
-                ["text" => "Nager dans le lac", "chapter" => 4],
-                ["text" => "Faire demi-tour", "chapter" => 1]
-            ]
-        );
-
-    }
-
-    public function show($id)
-    {
-        $chapter = $this->getChapter($id);
-
-        if ($chapter) {
-            include __DIR__ .'/../../resources/views/ChapterPage.php'; // Charge la vue pour le chapitre
-        } else {
-            // Si le chapitre n'existe pas, redirige vers un chapitre par défaut ou affiche une erreur
-            header('HTTP/1.0 404 Not Found');
-            echo "Chapitre non trouvé!";
+        if (!isset($_SESSION['userId']) || empty($_SESSION['userId'])) {
+            header("Location: /DungeonXplorer/login");
+            exit();
         }
-    }
 
-    public function getChapter($id)
-    {
-        foreach ($this->chapters as $chapter) {
-            if ($chapter->getId() == $id) {
-                return $chapter;
+        $hero = Hero::find($heroId);
+
+        if ($chapter && $hero) {
+            $db = \App\Core\Database::getInstance();
+        
+            // Mise à jour de la progression
+            $stmt = $db->prepare("UPDATE Progression 
+                SET chapter_id = :chapter, 
+                    start_date = NOW() 
+                WHERE hero_id = :hero");
+            $stmt->execute([':chapter' => $id, ':hero' => $heroId]);
+
+            // 2. LOGIQUE DE RÉCUPÉRATION VIA SESSION (Sans modification de colonne)
+            // Initialisation du tableau des objets ramassés s'il n'existe pas
+            if (!isset($_SESSION['collected_items_chapters'])) {
+                $_SESSION['collected_items_chapters'] = [];
             }
+
+            // On vérifie s'il y a un item ET que ce n'est PAS un combat
+            if ($chapter->getMonsterId() == -1 && $chapter->getItemId() !== null) {
+                
+                // On vérifie si ce chapitre n'est pas déjà dans la liste des objets ramassés
+                if (!in_array($id, $_SESSION['collected_items_chapters'])) {
+                    
+                    // Ajout de l'objet à l'inventaire
+                    $hero->getInventoryItems()->addItem($chapter->getItemId(), 1);
+                    
+                    // On ajoute l'ID du chapitre à la liste pour ne plus le ramasser
+                    $_SESSION['collected_items_chapters'][] = $id;
+                    
+                    // On prépare le message pour la vue
+                    $_SESSION['flash_item_collected'] = true;
+                }
+            }
+
+            include __DIR__ .'/../../resources/views/ChapterPage.php'; 
+        } else {
+            header('HTTP/1.0 404 Not Found');
+            echo "Chapitre non trouvé !";
         }
-        return null; // Chapitre non trouvé
+    }
+
+    public function resume($heroId, $chapterId) {
+        $_SESSION['active_hero_id'] = $heroId;
+        header("Location: /DungeonXplorer/chapter/" . $chapterId);
+        exit();
     }
 }

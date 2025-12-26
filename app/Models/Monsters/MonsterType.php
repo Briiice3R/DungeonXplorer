@@ -17,14 +17,14 @@ class MonsterType
     public function save(){
         $db = Database::getInstance();
         if($this->id === null){
-            $stmt = $db->prepare("INSERT INTO monster_type (name, description) VALUES (:name, :description)");
+            $stmt = $db->prepare("INSERT INTO Monster_Type (name, description) VALUES (:name, :description)");
             $stmt->execute([
                 ':name' => $this->name,
                 ':description' => $this->description
             ]);
             $this->id = $db->lastInsertId();
         } else{
-            $stmt = $db->prepare("UPDATE monster_type SET name = :name, description = :description WHERE id = :id");
+            $stmt = $db->prepare("UPDATE Monster_Type SET name = :name, description = :description WHERE id = :id");
             $stmt->execute([
                 ':name' => $this->name,
                 ':description' => $this->description,
@@ -35,7 +35,7 @@ class MonsterType
 
     public static function find($id){
         $db = Database::getInstance();
-        $stmt = $db->prepare("SELECT * FROM monster_type WHERE id = :id");
+        $stmt = $db->prepare("SELECT * FROM Monster_Type WHERE id = :id");
         $stmt->execute([':id' => $id]);
         $data = $stmt->fetch();
         if(!$data){

@@ -8,13 +8,15 @@ class Spell
     private string $name;
     private string $description;
     private float $manaCost;
+    private float $effect;
 
-    public function __construct($id, $name, $description, $manaCost)
+    public function __construct($id, $name, $description, $manaCost, $effect)
     {
         $this->id = $id;
         $this->name = $name;
         $this->description = $description;
         $this->manaCost = $manaCost;
+        $this->effect = $effect;
     }
 
     public function getId(): int
@@ -33,20 +35,27 @@ class Spell
         return $this->manaCost;
     }
 
+    public function getEffect(): float
+    {
+        return $this->effect;
+    }
+
     public function save(){
         $db = Database::getInstance();
         if($this->id === null){
-            $stmt = $db->prepare("INSERT INTO spell (name, description, mana_cost) VALUES (:name, :description, :mana_cost)");
+            $stmt = $db->prepare("INSERT INTO Spell (name, description, mana_cost, effect) VALUES (:name, :description, :mana_cost, :effect)");
             $stmt->bindParam(':name', $this->name);
             $stmt->bindParam(':description', $this->description);
             $stmt->bindParam(':mana_cost', $this->manaCost);
+            $stmt->bindParam(':effect', $this->effect);
             $stmt->execute();
             $this->id = $db->lastInsertId();
         } else {
-            $stmt = $db->prepare("UPDATE spells SET name = :name, description = :description, mana_cost = :mana_cost WHERE id = :id");
+            $stmt = $db->prepare("UPDATE Spell SET name = :name, description = :description, mana_cost = :mana_cost, effect = :effect WHERE id = :id");
             $stmt->bindParam(':name', $this->name);
             $stmt->bindParam(':description', $this->description);
             $stmt->bindParam(':mana_cost', $this->manaCost);
+            $stmt->bindParam(':effect', $this->effect);
             $stmt->bindParam(':id', $this->id);
             $stmt->execute();
         }
@@ -54,13 +63,12 @@ class Spell
 
     public static function find($id){
         $db = Database::getInstance();
-        $stmt = $db->prepare("SELECT * FROM spell WHERE id = :id");
-        $stmt->bindParam(':id', $id);
-        $stmt->execute();
+        $stmt = $db->prepare("SELECT * FROM Spell WHERE id = :id");
+        $stmt->execute([':id' => $id]);
         $data = $stmt->fetch(\PDO::FETCH_ASSOC);
         if(!$data){
             return null;
         }
-        return new Spell($data['id'], $data['name'], $data['description'], $data['mana_cost']);
+        return new Spell($data['id'], $data['name'], $data['description'], $data['mana_cost'], $data['effect']);
     }
 }

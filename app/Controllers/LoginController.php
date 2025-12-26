@@ -26,7 +26,7 @@ class LoginController{
         } else if($retour==-2){
             $_SESSION["invalidUsernameNorPassword"]=true;
             $_SESSION["loginError"]=false;
-            header("Location: /login");
+            header("Location: /DungeonXplorer/login");
             exit;
         } else {
             $_SESSION["invalidUsernameNorPassword"]=false;

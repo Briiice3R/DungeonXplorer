@@ -9,6 +9,7 @@ if (!isset($_SESSION["resetError"])) {
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+    <link rel="icon" href="/DungeonXplorer/favicon.ico" type="image/x-icon">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Connexion - DungeonXplorer</title>
@@ -20,6 +21,9 @@ if (!isset($_SESSION["resetError"])) {
     </style>
 </head>
 <body class="font-['Roboto'] text-[#E5E5E5] bg-[#1A1A1A] min-h-screen flex flex-col">
+    <!-- Header -->
+    <?php include_once ("Navbar/Navbar.php"); ?>
+    
     <h1 class="font-['Pirata_One'] text-5xl text-center text-[#C4975E] mt-8 mb-6">Réinitilisation du mot de passe</h1>
     <div class="max-w-md mx-auto bg-[#2E2E2E] rounded-lg shadow-2xl p-8 border-2 border-[#C4975E]/30">
         <form action="forgotPassword" method="POST" class="max-w-md mx-auto">

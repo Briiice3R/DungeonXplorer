@@ -22,13 +22,13 @@ class ItemType{
     public function save(){
         $db = Database::getInstance();
         if($this->id === null){
-            $stmt = $db->prepare("INSERT INTO item_type (category) VALUES (:category)");
+            $stmt = $db->prepare("INSERT INTO Item_Type (category) VALUES (:category)");
             $this->id = $db->lastInsertId();
             $stmt->execute([
                 ':category' => $this->category
             ]);
         } else {
-            $stmt = $db->prepare("UPDATE item_type SET category = :category WHERE id = :id");
+            $stmt = $db->prepare("UPDATE Item_Type SET category = :category WHERE id = :id");
             $stmt->execute([
                 ':category' => $this->category,
                 ':id' => $this->id
@@ -38,7 +38,7 @@ class ItemType{
 
     public static function find($id): ?ItemType{
         $db = Database::getInstance();
-        $stmt = $db->prepare("SELECT * FROM item_type WHERE id = :id");
+        $stmt = $db->prepare("SELECT * FROM Item_Type WHERE id = :id");
         $stmt->execute([':id' => $id]);
         $data = $stmt->fetch();
         if(!$data){

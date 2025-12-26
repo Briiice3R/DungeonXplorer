@@ -1,15 +1,11 @@
 <?php
 
-/*
-    - Commande à exécuter pour lancer le serveur : php -S localhost:8001
-*/
+session_start();
 // Require composer autoloader
 require __DIR__ . '/vendor/autoload.php';
 
-session_start();
-
-
 use Bramus\Router\Router;
+
 // Create Router instance
 $router = new Router();
 
@@ -19,25 +15,52 @@ $router->set404(function(){
     echo "erreur";
 });
 
-// Routes
+// --- Routes accueil ---
 $router->get('/', "HomeController@index");
-$router->get('/profile/{id}', "ProfileController@index");
-$router->get('/updateprofile/{id}', "ProfileController@show");
-$router->post('/update/{id}', "ProfileController@update");
-$router->get('/delete/{id}', "ProfileController@delete");
-$router->get('/start-adventure', "HomeController@index");
 
-
-
-$router->get('/chapter/{id}', "ChapterController@show");
-
+// --- Routes Authentification ---
 $router->get('/signup', "SignUpController@index");
 $router->post('/signup', "SignUpController@register");
 $router->get('/login', "LoginController@index");
 $router->post('/login', "LoginController@login");
 $router->get('/logout', "LogoutController@logout");
-// $router->get('/forgotPassword', "ResetController@index1");
-// $router->post('/forgotPassword', "ResetController@reset");
-// $router->get('/checkResetPassword', "ResetController@index2");
+$router->get('/forgotPassword', "ResetController@index1");
+$router->post('/forgotPassword', "ResetController@reset");
+$router->get('/checkResetPassword', "ResetController@index2");
+$router->post('/checkResetPassword', "ResetController@checkResetCode");
+$router->get('/resetPassword', "ResetController@index3");
+$router->post('/resetPassword', "ResetController@resetPassword");
+
+// --- Routes Authentification Admin ---
+$router->get('/admin/dashboard', 'AdminController@index');
+$router->get('/admin/delete/image/{filename}', 'AdminController@deleteImage');
+$router->get('/admin/delete/{type}/{id}', 'AdminController@deleteContent');
+$router->get('/admin/forge/data/{type}/{id}', 'AdminController@getForgeData');
+$router->post('/admin/forge/update/{type}/{id}', 'AdminController@updateContent');
+$router->post('/admin/forge/add/{type}', 'AdminController@addContent');
+
+// --- Routes Aventure (Nécessitent une connexion) ---
+$router->get('/aventureaccueil', "AventureController@index");
+$router->get('/aventurecreate', "AventureController@create");
+
+// --- Routes Héros ---
+$router->post('/hero/create', "HeroController@create"); 
+$router->get('/choix-hero', "HeroController@index");
+$router->get('/hero/delete/{id}', 'HeroController@deleteAdventure');
+
+// --- Route pour reprendre une aventure spécifique ---
+$router->get('/chapter/reprendre/{heroId}/{chapterId}', 'ChapterController@resume');
+
+// --- Routes Jeu ---
+$router->get('/chapter/{id}', "ChapterController@show");
+$router->get('/fight/{id}', "FightController@show");
+$router->post('/saveInventory/(\d+)', 'InventoryController@saveInventory');
+
+// --- Routes Profil ---
+$router->get('/profile/{id}',"ProfileController@index");
+$router->get('/updateprofile/{id}',"ProfileController@show");
+$router->post('/update/{id}',"ProfileController@update");
+$router->get('/delete/{id}',"ProfileController@delete");
+
 // Run it!
 $router->run();
