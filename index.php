@@ -1,11 +1,11 @@
 <?php
 
-/*
-    - Commande à exécuter pour lancer le serveur : php -S localhost:8001
-*/
+session_start();
 // Require composer autoloader
 require __DIR__ . '/vendor/autoload.php';
+
 use Bramus\Router\Router;
+
 // Create Router instance
 $router = new Router();
 
@@ -15,25 +15,51 @@ $router->set404(function(){
     echo "erreur";
 });
 
-// Routes
+// --- Routes accueil ---
 $router->get('/', "HomeController@index");
-$router->get('/profile/{id}', "ProfileController@index");
-$router->get('/updateprofile/{id}', "ProfileController@show");
-$router->post('/update/{id}', "ProfileController@update");
-$router->get('/delete/{id}', "ProfileController@delete");
-$router->get('/start-adventure', "HomeController@index");
 
-$router->get('/api/fight/{heroId}/{monsterId}', [FightController::class, 'getFightData']);
+// --- Routes Authentification ---
+$router->get('/signup', "SignUpController@index");
+$router->post('/signup', "SignUpController@register");
+$router->get('/login', "LoginController@index");
+$router->post('/login', "LoginController@login");
+$router->get('/logout', "LogoutController@logout");
+$router->get('/forgotPassword', "ResetController@index1");
+$router->post('/forgotPassword', "ResetController@reset");
+$router->get('/checkResetPassword', "ResetController@index2");
+$router->post('/checkResetPassword', "ResetController@checkResetCode");
+$router->get('/resetPassword', "ResetController@index3");
+$router->post('/resetPassword', "ResetController@resetPassword");
 
-// Récupérer uniquement les données du héros
-$router->get('/api/hero/{heroId}', [FightController::class, 'getHeroJson']);
+// --- Routes Authentification Admin ---
+$router->get('/admin/dashboard', 'AdminController@index');
+$router->get('/admin/delete/{type}/{id}', 'AdminController@deleteContent');
+$router->get('/admin/forge/data/{type}/{id}', 'AdminController@getForgeData');
+$router->post('/admin/forge/update/{type}/{id}', 'AdminController@updateContent');
+$router->post('/admin/forge/add/{type}', 'AdminController@addContent');
+$router->get('/admin/delete/image/{filename}', 'AdminController@deleteImage');
 
-// Récupérer uniquement les données du monstre
-$router->get('/api/monster/{monsterId}', [FightController::class, 'getMonsterJson']);
+// --- Routes Aventure (Nécessitent une connexion) ---
+$router->get('/aventureaccueil', "AventureController@index");
+$router->get('/aventurecreate', "AventureController@create");
 
-// Sauvegarder les résultats du combat
-$router->post('/api/fight/save', [FightController::class, 'saveFightResult']);
+// --- Routes Héros ---
+$router->post('/hero/create', "HeroController@create"); 
+$router->get('/choix-hero', "HeroController@index");
+$router->get('/hero/delete/{id}', 'HeroController@deleteAdventure');
 
+// --- Route pour reprendre une aventure spécifique ---
+$router->get('/chapter/reprendre/{heroId}/{chapterId}', 'ChapterController@resume');
+
+// --- Routes Jeu ---
 $router->get('/chapter/{id}', "ChapterController@show");
+$router->get('/fight/{id}', "FightController@show");
+$router->get('/inventory/{id}', "InventoryController@show");
+// --- Routes Jeu ---
+$router->get('/profile/{id}',"ProfileController@index");
+$router->get('/updateprofile/{id}',"ProfileController@show");
+$router->post('/update/{id}',"ProfileController@update");
+$router->get('/delete/{id}',"ProfileController@delete");
+
 // Run it!
 $router->run();

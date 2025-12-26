@@ -5,13 +5,13 @@ use App\Models\Monsters\Monster;
 use App\Models\Chapters\Chapter;
 use App\Models\Heroes\Hero;
 use App\Models\Items\Inventory;
-use App\Model\Item\Potion;
-use App\Model\Item\Weapon;
-use App\Model\Item\Armor;
-use App\Model\Item\InventorySlot;
-use App\Model\Level;
-use App\Model\Spell;
-use App\Model\Chapters\ChapterChoice;
+use App\Models\Item\Potion;
+use App\Models\Item\Weapon;
+use App\Models\Item\Armor;
+use App\Models\Item\InventorySlot;
+use App\Models\Level;
+use App\Models\Spell;
+use App\Models\Chapters\ChapterChoice;
 
 class FightController
 {
@@ -24,7 +24,18 @@ class FightController
         $stmt->execute([':chapter' => $idChapitre]);
         $monsterId=$stmt->fetchColumn();
         
-        $monster = Monster::find($monsterId); 
+        $monster = Monster::find($monsterId);
+        $poisoningSpell = Spell::find(1);
+        $careSpell = Spell::find(5);
+        $strengthSpell = Spell::find(2);
+        $manaSpell = Spell::find(4);
+
+        $stmt = $db->prepare("SELECT to_chapter_id from Chapter_Choice WHERE from_chapter_id = :chapter AND to_chapter_id = 10 Or to_chapter_id = 19 Or to_chapter_id = 36 Or to_chapter_id = 59 Or to_chapter_id = 79");
+        $stmt->execute([':chapter' => $idChapitre]);
+        $deathChapter = $stmt->fetchColumn();
+        $stmt = $db->prepare("SELECT to_chapter_id from Chapter_Choice WHERE from_chapter_id = :chapter AND to_chapter_id <> 10 Or to_chapter_id <> 19 Or to_chapter_id <> 36 Or to_chapter_id <> 59 Or to_chapter_id <> 79");
+        $stmt->execute([':chapter' => $idChapitre]);
+        $afterChapter = $stmt->fetchColumn();
         
         if ($hero == null || $monster == null) {
             die("Héros ou Monstre introuvable !");
@@ -33,6 +44,12 @@ class FightController
         // Préparer les données pour JavaScript
         $heroData = $this->prepareHeroData($hero);
         $monsterData = $this->prepareMonsterData($monster);
+        $poisoningSpellData = $this->prepareSpellData($poisoningSpell);
+        $careSpellData = $this->prepareSpellData($careSpell);
+        $strengthSpellData = $this->prepareSpellData($strengthSpell);
+        $manaSpellData = $this->prepareSpellData($manaSpell);
+        $afterChapterData = $this->prepareAfterChapter($afterChapter);
+        $deathChapterData = $this->prepareAfterChapter($deathChapter);
 
         include __DIR__ . "/../../resources/views/FightPage.php";
     }
@@ -75,7 +92,7 @@ class FightController
                 'id' => $item->getId(),
                 'name' => $item->getName(),
                 'description' => $item->getDescription(),
-                'type' => $item->getItemType()->getName(),
+                'type' => $item->getItemType()->getCategory(),
                 'quantity' => $slot->getQuantity()
             ];
 
@@ -89,6 +106,25 @@ class FightController
 
             return $itemData;
         }, $inventory->getItems());
+    }
+
+    private function prepareAfterChapter($chapterid){
+        return[
+            'id' => $chapterid,
+            
+
+        ];
+        
+    }
+
+    private function prepareSpellData(Spell $spell){
+        return [
+            'id' => $spell->getId(),
+            'name'=> $spell->getName(),
+            'description' => $spell->getDescription(),
+            'manaCost' => $spell->getManaCost(),
+            'effect'=> $spell->getEffect()
+        ];
     }
 
     /**

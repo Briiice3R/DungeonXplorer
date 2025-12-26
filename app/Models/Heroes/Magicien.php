@@ -25,7 +25,7 @@ class Magicien extends Hero{
         ?Armor $armor,
         ?Weapon $primaryWeapon,
         ?Weapon $secondaryWeapon,
-        $spells = []
+        
     )
     {
         parent::__construct(
@@ -46,8 +46,6 @@ class Magicien extends Hero{
             $primaryWeapon,
             $secondaryWeapon,
         );
-
-        $this->spells=$spells;
     }
 
 

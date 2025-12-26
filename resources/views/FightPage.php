@@ -72,8 +72,15 @@
         <script>
             window.gameConfig = {
                 heroData: <?= json_encode($heroData) ?>,
-                monsterData: <?= json_encode($monsterData) ?>
+                monsterData: <?= json_encode($monsterData) ?>,
+                poisoningSpellData: <?= json_encode($poisoningSpellData) ?>,
+                careSpellData: <?= json_encode($careSpellData) ?>,
+                strengthSpellData: <?= json_encode($strengthSpellData) ?>,
+                manaSpellData: <?= json_encode($manaSpellData) ?>,
+                afterChapterData: <?= json_encode($afterChapterData) ?>,
+                deathChapterData: <?= json_encode($deathChapterData) ?>
             };
+            console.log(window.gameConfig);
         </script>
         <footer class="bg-[#2E2E2E] text-center p-4 mt-auto">
             <p class="mb-2">&copy; 2025 DungeonXplorer. Tous droits réservés.</p>
