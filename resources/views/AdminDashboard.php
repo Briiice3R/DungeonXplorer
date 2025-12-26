@@ -43,6 +43,9 @@
                         case 'addok':
                             echo "Action réussie ! Le nouvel élément a été ajouté.";
                             break;
+                        case 'supprimg':
+                            echo "Action réussie ! L'image a été définitivement supprimée de la bibliothèque.";
+                            break;
                         default:
                             echo "Action réussie !";
                     }
@@ -294,6 +297,7 @@
             let html = `<div class="space-y-4">`;
 
             if (type === 'monsters') {
+                const loots = data.loots || [];
                 html += `
                     <div>
                         <label class="block text-[#C4975E] text-xs font-bold uppercase mb-2">Nom du Monstre</label>
@@ -319,6 +323,21 @@
                                     </option>
                                 `).join('')}
                             </select>
+                        </div>
+                    </div>
+
+                    <div class="p-4 bg-blue-900/10 border border-blue-900/20 rounded mt-4">
+                        <div class="flex justify-between items-center mb-2">
+                            <label class="text-blue-500 font-bold uppercase text-[10px]">Butin (Monster Loot)</label>
+                            <button type="button" onclick="addLootRow()" class="bg-blue-600 text-white px-2 py-1 rounded text-[10px] uppercase font-bold">
+                                <i class="fas fa-plus mr-1"></i> Ajouter Loot
+                            </button>
+                        </div>
+                        <div id="lootsContainer" class="space-y-2">
+                            ${loots.length > 0 ? 
+                                loots.map((l, i) => generateLootRowHtml(l, i)).join('') : 
+                                generateLootRowHtml() 
+                            }
                         </div>
                     </div>`;
             } 
@@ -397,7 +416,6 @@
                         <div>
                             <label class="block text-[#C4975E] text-xs font-bold uppercase mb-2">Chapitre lié</label>
                             <select name="display_chapter" required class="w-full bg-[#1A1A1A] border border-[#C4975E]/30 p-3 rounded text-white focus:border-[#C4975E] outline-none">
-                                <option value="">-- Sélectionner un chapitre --</option>
                                 ${chapterList.map(c => `
                                     <option value="${c.id}" ${data.chapter_id == c.id ? 'selected' : ''}>
                                         Chapitre ${c.id} : ${c.title}
@@ -440,7 +458,7 @@
                 const response = await fetch(`/DungeonXplorer/admin/forge/data/${type}/${id}`);
                 const data = await response.json();
                 document.getElementById('editForm').action = `/DungeonXplorer/admin/forge/update/${type}/${id}`;
-                document.getElementById('modalTitle').innerText = `Modifier : ${data.title || data.name}`;
+                document.getElementById('modalTitle').innerText = `Modifier : ${data.title || data.name || 'Trésor'}`;
                 inputsContainer.innerHTML = renderForgeInputs(type, data, true);
                 initImageLogic(); // Active la prévisualisation
             } catch (error) {
@@ -481,6 +499,27 @@
             if (container) {
                 const div = document.createElement('div');
                 div.innerHTML = generateChoiceHtml();
+                container.appendChild(div.firstElementChild);
+            }
+        }
+
+        function generateLootRowHtml(loot = {}, index = Date.now()) {
+            return `
+                <div class="flex gap-2 items-center" id="loot_row_${index}">
+                    <select name="loot_item_id[]" class="flex-1 bg-[#1A1A1A] border border-blue-900/30 p-2 rounded text-white text-xs">
+                        <option value="">Objet...</option>
+                        ${itemList.map(i => `<option value="${i.id}" ${loot.item_id == i.id ? 'selected' : ''}>${i.name}</option>`).join('')}
+                    </select>
+                    <input type="number" name="loot_qty[]" value="${loot.quantity || 1}" min="1" class="w-16 bg-[#1A1A1A] border border-blue-900/30 p-2 rounded text-white text-xs">
+                    <button type="button" onclick="document.getElementById('loot_row_${index}').remove()" class="text-red-500 px-1"><i class="fas fa-times"></i></button>
+                </div>`;
+        }
+
+        function addLootRow() {
+            const container = document.getElementById('lootsContainer');
+            if (container) {
+                const div = document.createElement('div');
+                div.innerHTML = generateLootRowHtml();
                 container.appendChild(div.firstElementChild);
             }
         }

@@ -124,19 +124,31 @@ class AdminController {
         
         // Déterminer le nom de la table et de la colonne ID
         if ($type === 'chapters') {
-            $tableName = 'Chapter';
-            $idColumn = 'id';
+            $stmt = $db->prepare("SELECT * FROM Chapter WHERE id = :id");
+            $stmt->execute([':id' => $id]);
+            $data = $stmt->fetch(\PDO::FETCH_ASSOC);
+        
+            if ($data) {
+                $data['monster_id'] = $db->query("SELECT monster_id FROM Chapter_Monster WHERE chapter_id = $id")->fetchColumn();
+                $data['item_id_simple'] = $db->query("SELECT item_id FROM Chapter_item WHERE chapter_id = $id")->fetchColumn();
+                $treasure = $db->query("SELECT item_id, quantity FROM Treasure WHERE chapter_id = $id")->fetch(\PDO::FETCH_ASSOC);
+                $data['treasure_item_id'] = $treasure['item_id'] ?? null;
+                $data['treasure_qty'] = $treasure['quantity'] ?? null;
+                $data['choices'] = $db->query("SELECT to_chapter_id, choice_text FROM Chapter_Choice WHERE from_chapter_id = $id")->fetchAll(\PDO::FETCH_ASSOC);
+            }
         } elseif ($type === 'monsters') {
-            $tableName = 'Monster';
-            $idColumn = 'id';
+            $stmt = $db->prepare("SELECT * FROM Monster WHERE id = :id");
+            $stmt->execute([':id' => $id]);
+            $data = $stmt->fetch(\PDO::FETCH_ASSOC);
+        
+            if ($data) {
+                $data['loots'] = $db->query("SELECT item_id, quantity FROM Monster_Loot WHERE monster_id = $id")->fetchAll(\PDO::FETCH_ASSOC);
+            }
         } else {
-            $tableName = 'Treasure';
-            $idColumn = 'item_id';
+            $stmt = $db->prepare("SELECT t.*, i.name as title FROM Treasure t JOIN Item i ON t.item_id = i.id WHERE t.item_id = :id");
+            $stmt->execute([':id' => $id]);
+            $data = $stmt->fetch(\PDO::FETCH_ASSOC);
         }
-
-        $stmt = $db->prepare("SELECT * FROM $tableName WHERE $idColumn = :id");
-        $stmt->execute([':id' => $id]);
-        $data = $stmt->fetch(\PDO::FETCH_ASSOC);
 
         // Si c'est un chapitre, on ajoute les données liées
         if ($type === 'chapters' && $data) {
@@ -154,6 +166,9 @@ class AdminController {
             // Choix de destination (Table Chapter_Choice)
             $choices = $db->query("SELECT to_chapter_id, choice_text FROM Chapter_Choice WHERE from_chapter_id = $id")->fetchAll(\PDO::FETCH_ASSOC);
             $data['choices'] = $choices ?: [];
+        } elseif ($type === 'monsters' && $data) {
+            // Loot Mob
+            $data['loots'] = $db->query("SELECT item_id, quantity FROM Monster_Loot WHERE monster_id = $id")->fetchAll(\PDO::FETCH_ASSOC);
         }
 
         header('Content-Type: application/json');
@@ -235,8 +250,23 @@ class AdminController {
                 exit("Erreur Forge: " . $e->getMessage());
             }
         } elseif ($type === 'monsters') {
-            $stmt = $db->prepare("INSERT INTO Monster (name, description, pv, mana, strength, initiative, drop_xp, monster_type_id) VALUES (:n, :desc, :pv, :mana, :s, :ini, :xp, :type_id)");
-            $stmt->execute([':n' => $_POST['display_name'], ':desc' => $_POST['display_desc'] ,':pv' => $_POST['pv'], ':mana' => $_POST['mana'], ':s' => $_POST['strength'], ':ini' => $_POST['initiative'], ':xp' => $_POST['drop_xp'], ':type_id' => $_POST['monster_type_id']]);
+            $db->beginTransaction();
+            try {
+                $stmt = $db->prepare("INSERT INTO Monster (name, description, pv, mana, strength, initiative, drop_xp, monster_type_id) VALUES (:n, :desc, :pv, :mana, :s, :ini, :xp, :type_id)");
+                $stmt->execute([':n' => $_POST['display_name'], ':desc' => $_POST['display_desc'] ,':pv' => $_POST['pv'], ':mana' => $_POST['mana'], ':s' => $_POST['strength'], ':ini' => $_POST['initiative'], ':xp' => $_POST['drop_xp'], ':type_id' => $_POST['monster_type_id']]);
+                $newId = $db->lastInsertId();
+
+                // AJOUT DES LOOTS
+                if (!empty($_POST['loot_item_id'])) {
+                    foreach ($_POST['loot_item_id'] as $key => $itemId) {
+                        $qty = $_POST['loot_qty'][$key] ?? 1;
+                        if ($itemId) $db->prepare("INSERT INTO Monster_Loot (monster_id, item_id, quantity) VALUES (?,?,?)")->execute([$newId, $itemId, $qty]);
+                    }
+                }
+                $db->commit();
+            } catch (\Exception $e) {
+                $db->rollBack(); exit($e->getMessage());
+            }
         } elseif ($type === 'treasures') {
             $stmt = $db->prepare("INSERT INTO Treasure (chapter_id, item_id, quantity) VALUES (:c, :i, :q)");
             $stmt->execute([':c' => $_POST['display_chapter'], ':i' => $_POST['item_id'], ':q' => $_POST['quantite']]);
@@ -293,7 +323,7 @@ class AdminController {
                         $text = $_POST['choice_text'][$key] ?? '';
                         if (!empty($toId) && !empty($text)) {
                             $db->prepare("INSERT INTO Chapter_Choice (from_chapter_id, to_chapter_id, choice_text) VALUES (:f, :t, :txt)")
-                               ->execute([':f' => $id, ':t' => $toId, ':txt' => $text]); // Utilisez $id au lieu de $newId pour l'update
+                               ->execute([':f' => $id, ':t' => $toId, ':txt' => $text]);
                         }
                     }
                 }
@@ -304,9 +334,23 @@ class AdminController {
                 exit("Erreur update: " . $e->getMessage());
             }
         } elseif ($type === 'monsters') {
-            $stmt = $db->prepare("UPDATE Monster SET name = :n, description = :desc, pv = :pv, mana = :mana, strength = :s, initiative = :ini, drop_xp = :xp, monster_type_id = :type_id WHERE id = :id");
-            $stmt->execute([':n' => $_POST['display_name'], ':desc' => $_POST['display_desc'], ':pv' => $_POST['pv'], ':mana' => $_POST['mana'], ':s' => $_POST['strength'], ':ini' => $_POST['initiative'], ':xp' => $_POST['drop_xp'], ':type_id' => $_POST['monster_type_id'], ':id' => $id
-            ]);
+            $db->beginTransaction();
+            try {
+                $db->prepare("UPDATE Monster SET name = :n, description = :desc, pv = :pv, mana = :mana, strength = :s, initiative = :ini, drop_xp = :xp, monster_type_id = :type_id WHERE id = :id")
+                   ->execute([':n' => $_POST['display_name'], ':desc' => $_POST['display_desc'], ':pv' => $_POST['pv'], ':mana' => $_POST['mana'], ':s' => $_POST['strength'], ':ini' => $_POST['initiative'], ':xp' => $_POST['drop_xp'], ':type_id' => $_POST['monster_type_id'], ':id' => $id]);
+
+                // Update loot mob
+                $db->prepare("DELETE FROM Monster_Loot WHERE monster_id = ?")->execute([$id]);
+                if (!empty($_POST['loot_item_id'])) {
+                    foreach ($_POST['loot_item_id'] as $key => $itemId) {
+                        $qty = $_POST['loot_qty'][$key] ?? 1;
+                        if ($itemId) $db->prepare("INSERT INTO Monster_Loot (monster_id, item_id, quantity) VALUES (?,?,?)")->execute([$id, $itemId, $qty]);
+                    }
+                }
+                $db->commit();
+            } catch (\Exception $e) {
+                $db->rollBack(); exit($e->getMessage());
+            }
         } elseif ($type === 'treasures') {
             // Suppression/Réinsertion pour gérer le changement d'ID item
             $db->prepare("DELETE FROM Treasure WHERE item_id = :old_id")->execute([':old_id' => $id]);

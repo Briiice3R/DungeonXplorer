@@ -33,11 +33,11 @@ $router->post('/resetPassword', "ResetController@resetPassword");
 
 // --- Routes Authentification Admin ---
 $router->get('/admin/dashboard', 'AdminController@index');
+$router->get('/admin/delete/image/{filename}', 'AdminController@deleteImage');
 $router->get('/admin/delete/{type}/{id}', 'AdminController@deleteContent');
 $router->get('/admin/forge/data/{type}/{id}', 'AdminController@getForgeData');
 $router->post('/admin/forge/update/{type}/{id}', 'AdminController@updateContent');
 $router->post('/admin/forge/add/{type}', 'AdminController@addContent');
-$router->get('/admin/delete/image/{filename}', 'AdminController@deleteImage');
 
 // --- Routes Aventure (Nécessitent une connexion) ---
 $router->get('/aventureaccueil', "AventureController@index");
@@ -54,7 +54,7 @@ $router->get('/chapter/reprendre/{heroId}/{chapterId}', 'ChapterController@resum
 // --- Routes Jeu ---
 $router->get('/chapter/{id}', "ChapterController@show");
 $router->get('/fight/{id}', "FightController@show");
-
+$router->get('/inventory/{id}', "InventoryController@show");
 // --- Routes Jeu ---
 $router->get('/profile/{id}',"ProfileController@index");
 $router->get('/updateprofile/{id}',"ProfileController@show");
