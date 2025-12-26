@@ -148,7 +148,7 @@ abstract class Hero{
     public static function find(int $id): ?Hero{
         // Cette méthode sera implémentée dans les classes filles
         $db = Database::getInstance();
-        $sql = "SELECT hero_type_id FROM Hero WHERE id = :id";
+        $sql = "SELECT * FROM Hero WHERE id = :id";
         $stmt = $db->prepare($sql);
         $stmt->execute([':id' => $id]);
         $result = $stmt->fetch(\PDO::FETCH_ASSOC);

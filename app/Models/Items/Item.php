@@ -29,7 +29,7 @@ class Item{
         $pdo = Database::getInstance();
         $itemType = ItemType::find($this->itemType->getId());
         if($this->id === null){
-            $stmt = $pdo->prepare("INSERT INTO item (name, description,max_stack_size, item_type_id) VALUES (:name, :description, :maxStackSize ,:item_type_id)");
+            $stmt = $pdo->prepare("INSERT INTO Item (name, description,max_stack_size, item_type_id) VALUES (:name, :description, :maxStackSize ,:item_type_id)");
             $stmt->execute([
                 ':name' => $this->name,
                 ':description' => $this->description,
@@ -38,7 +38,7 @@ class Item{
             ]);
             $this->id = $pdo->lastInsertId();
         } else{
-            $stmt = $pdo->prepare("UPDATE item SET name = :name, description = :description, max_stack_size = :maxStackSize, item_type_id = :item_type_id WHERE id = :id");
+            $stmt = $pdo->prepare("UPDATE Item SET name = :name, description = :description, max_stack_size = :maxStackSize, item_type_id = :item_type_id WHERE id = :id");
             $stmt->execute([
                 ':name' => $this->name,
                 ':description' => $this->description,
@@ -51,7 +51,7 @@ class Item{
 
     public static function find($id):?Item{
         $pdo = Database::getInstance();
-        $stmt = $pdo->prepare("SELECT * FROM item WHERE id = :id");
+        $stmt = $pdo->prepare("SELECT * FROM Item WHERE id = :id");
         $stmt->execute([':id' => $id]);
         $result = $stmt->fetch();
         if(!$result){

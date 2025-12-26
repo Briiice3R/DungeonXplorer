@@ -54,8 +54,9 @@ $router->get('/chapter/reprendre/{heroId}/{chapterId}', 'ChapterController@resum
 // --- Routes Jeu ---
 $router->get('/chapter/{id}', "ChapterController@show");
 $router->get('/fight/{id}', "FightController@show");
-$router->get('/inventory/{id}', "InventoryController@show");
-// --- Routes Jeu ---
+$router->post('/saveInventory/(\d+)', 'InventoryController@saveInventory');
+
+// --- Routes Profil ---
 $router->get('/profile/{id}',"ProfileController@index");
 $router->get('/updateprofile/{id}',"ProfileController@show");
 $router->post('/update/{id}',"ProfileController@update");

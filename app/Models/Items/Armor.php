@@ -1,32 +1,45 @@
 <?php
 
 namespace App\Models\Items;
+
 use App\Core\Database;
 
 class Armor extends Item
 {
     private float $protection;
+
     public function __construct(
         $id,
         $name,
         $description,
-        $protection
+        $protection,
+        $maxStackSize = 1
     ) {
-        parent::__construct($id, $name, $description, new ItemType(null, ItemType::ARMOR));
+        parent::__construct(
+            $id, 
+            $name, 
+            $description, 
+            $maxStackSize, 
+            new ItemType(null, ItemType::ARMOR)
+        );
         $this->protection = $protection;
     }
 
-    public function save(){
+    public function save() {
         parent::save();
         $db = Database::getInstance();
-        if($this->id === null){
-            $stmt = $db->prepare("INSERT INTO armor (item_id, protection) VALUES (:item_id, :protection)");
-            $this->id = $db->lastInsertId();
+        
+        $check = $db->prepare("SELECT COUNT(*) FROM Armor WHERE item_id = :id");
+        $check->execute([':id' => $this->id]);
+        
+        if ($check->fetchColumn() == 0) {
+            $stmt = $db->prepare("INSERT INTO Armor (item_id, protection) VALUES (:item_id, :protection)");
             $stmt->execute([
+                ':item_id' => $this->id,
                 ':protection' => $this->protection
             ]);
-        } else{
-            $stmt = $db->prepare("UPDATE armor SET protection = :protection WHERE item_id = :item_id");
+        } else {
+            $stmt = $db->prepare("UPDATE Armor SET protection = :protection WHERE item_id = :item_id");
             $stmt->execute([
                 ':item_id' => $this->id,
                 ':protection' => $this->protection
@@ -36,20 +49,25 @@ class Armor extends Item
 
     public static function find($id): ?Armor {
         $db = Database::getInstance();
-        $stmt = $db->prepare("SELECT i.id, i.name, i.description, a.protection FROM item i JOIN armor a ON i.id = a.item_id WHERE i.id = :id");
+        $stmt = $db->prepare("SELECT i.id, i.name, i.description, i.max_stack_size, a.protection 
+                               FROM Item i 
+                               JOIN Armor a ON i.id = a.item_id 
+                               WHERE i.id = :id");
         $stmt->execute([':id' => $id]);
-        $result = $stmt->fetch();
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+
         if (!$result) {
             return null;
         }
+
         return new Armor(
             $result['id'],
             $result['name'],
             $result['description'],
-            $result['protection']
+            $result['protection'],
+            $result['max_stack_size'] ?? 1
         );
     }
-
 
     public function getProtection(): float {
         return $this->protection;

@@ -3,6 +3,8 @@ namespace App\Models\Heroes;
 use App\Models\Items\Potion;
 use App\Models\User;
 use App\Models\Level;
+use App\Models\Items\Weapon;
+use App\Models\Items\Armor;
 
 class Guerrier extends Hero{
 
