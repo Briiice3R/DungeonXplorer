@@ -18,6 +18,9 @@ let affichageManaHeros = document.getElementById('mana_heros');
 let affichageNomMonstre = document.getElementById('nom_monstre');
 let affichageForceHeros = document.getElementById('force_heros');
 let affichageLog = document.getElementById('affichage_log');
+let affichageInitiativeHeros = document.getElementById('initiative_heros');
+let affichagePvMaxHeros = document.getElementById('pvMax_heros');
+let affichageDescriptionMonstre = document.getElementById('description_monstre');
 
 let boutonSortEmpoisonnement = document.getElementById('sort_empoisonnement');
 let boutonSortSoin = document.getElementById('sort_soin');
@@ -33,6 +36,10 @@ affichagePvHeros.textContent = heroData.pv;
 affichagePvMonstre.textContent = monsterData.pv;
 affichageForceHeros.textContent = heroData.strength;
 affichageManaHeros.textContent = heroData.mana;
+affichageInitiativeHeros.textContent = heroData.initiative;
+affichagePvMaxHeros.textContent = heroData.maxPv;
+affichageDescriptionMonstre.textContent = monsterData.description;
+affichageNomMonstre.textContent = monsterData.name;
 const potionSoin = heroData.inventory.find(item => 
     item.type === 'Potion' && item.effectType === 'soin'
 );
@@ -178,13 +185,17 @@ function lancerSortSoin() {
         // Ne pas dépasser les PV max
         if (heroData.pv > heroData.maxPv) {
             heroData.pv = heroData.maxPv;
+            affichageLog.textContent = "Vos pv sont aux maximum";
+            heroData.mana += careSpellData.manaCost;
         }
+        else{
         
         affichagePvHeros.textContent = heroData.pv;
         affichageManaHeros.textContent = heroData.mana;
         affichageLog.textContent = `Sort de soin! Vous récupérez ${careSpellData.effect} PV!`;
         
         setTimeout(monstreAttaque, 1000);
+    }
     }
 }
 
@@ -261,12 +272,15 @@ function lancerSortMana() {
         // Ne pas dépasser le mana max
         if (heroData.mana > heroData.maxMana) {
             heroData.mana = heroData.maxMana;
+            affichageLog.textContent = "Votre mana est au maximum";
+            heroData.mana += manaSpellData.manaCost;
         }
-        
+        else{
         affichageManaHeros.textContent = heroData.mana;
         affichageLog.textContent = `Sort de mana! Vous récupérez ${manaSpellData.effect} mana!`;
         
         setTimeout(monstreAttaque, 1000);
+        }
     }
 }
 
@@ -345,11 +359,9 @@ function lancerPotionMana() {
 function verifierFinCombat() {
     if (estGagnee()) {
         affichageLog.textContent = `Victoire! Vous avez vaincu ${monsterData.name}! +${monsterData.dropXp} XP`;
-        desactiverBoutons();
         redirigerVersPage(`/chapter/${afterChapterData.id}`);
     } else if (estPerdu()) {
         affichageLog.textContent = "Défaite... Vous avez été vaincu!";
-        desactiverBoutons();
         redirigerVersPage(`/chapter/${deathChapterData.id}`);
     }
 }
@@ -362,41 +374,6 @@ function estGagnee() {
 // Retourne vrai si le héros perd
 function estPerdu() {
     return heroData.pv == 0;
-}
-
-// Désactive tous les boutons de combat
-function desactiverBoutons() {
-    boutonAttaque.disabled = true;
-    boutonSortEmpoisonnement.disabled = true;
-    boutonSortSoin.disabled = true;
-    boutonSortForce.disabled = true;
-    boutonSortMana.disabled = true;
-    boutonPotionSoin.disabled = true;
-    boutonPotionForce.disabled = true;
-    boutonPotionMana.disabled = true;
-}
-
-// Sauvegarde le résultat du combat
-async function sauvegarderResultat(victoire) {
-    try {
-        const response = await fetch('/fight/saveFightResult', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                heroId: heroData.id,
-                pv: heroData.pv,
-                mana: heroData.mana,
-                xpGained: victoire ? monsterData.dropXp : 0
-            })
-        });
-        
-        const result = await response.json();
-        console.log(result.message);
-    } catch (error) {
-        console.error('Erreur lors de la sauvegarde:', error);
-    }
 }
 
 /****** Événements ******/
